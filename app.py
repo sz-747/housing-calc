@@ -1,8 +1,10 @@
 from flask import Flask, redirect, render_template, request, url_for
 
+from data.data_service import SuburbDataService
+from data.scenario_storage import ScenarioStorage
 from engine import CalculationEngine
-from market_data import get_suburb, list_suburbs
-
+from engine.input_model import ComparisonResult, UserInput
+from engine.validation import InputValidator
 
 app = Flask(__name__)
 app.config["TEMPLATES_AUTO_RELOAD"] = True
