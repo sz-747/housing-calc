@@ -55,3 +55,16 @@ class InputValidator:
             return
         if value < 0:
             self._errors.append(f"{label} must be zero or more.")
+            
+    def _check_positive_integer(self, form_data, key, label):
+        raw = form_data.get(key, "").strip()
+        if raw == "":
+            self._errors.append(f"{label} is required.")
+            return
+        try:
+            value = int(raw)
+        except ValueError:
+            self._errors.append(f"{label} must be a whole number.")
+            return
+        if value < 1:
+            self._errors.append(f"{label} must be at least 1.")
