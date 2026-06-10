@@ -1,0 +1,38 @@
+<!-- Base template: shared shell (nav, CSS, <head>) inherited by every page -->
+<!--Child templates fill in {% block title %} and {% block content %}-->
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{% block title %}Dominus{% endblock %}</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/base.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/nav.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/form.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/results.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/chart.css') }}"
+    />
+  </head>
+  <body>
+    <nav>
+      <a href="{{ url_for('home') }}" class="nav-brand">Dominus</a>
+      <a href="{{ url_for('learn') }}">Learn</a>
+    </nav>
+    <main class="container">{% block content %}{% endblock %}</main>
+  </body>
+</html>
