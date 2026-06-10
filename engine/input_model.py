@@ -60,3 +60,17 @@ class UserInput:
             "return_rate": self.return_rate,
             "loan_term_years": self.loan_term_years,
         }
+        
+    @staticmethod #take value from form to make sure its positive
+    def _parse_positive_float(form, key, label):
+        raw = form.get(key, "").strip()
+        if raw == "":
+            raise ValueError(f"{label} is required")
+        try:
+            value = float(raw)
+        except ValueError:
+            raise ValueError(f"{label} must be a number")
+        if value <= 0:
+            raise ValueError(f"{label} must be bigger than 0")
+        return value
+    
