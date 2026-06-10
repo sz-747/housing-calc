@@ -87,3 +87,14 @@
     />
   </label>
 
+  <label>
+    Loan term (years)
+    <input
+      type="number"
+      name="loan_term_years"
+      min="1"
+      value="{{ form_data.get('loan_term_years', '30') }}"
+      required
+    />
+  </label>
+
