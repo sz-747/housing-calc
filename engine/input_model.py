@@ -49,3 +49,14 @@ class UserInput:
             return_rate=return_rate,
             loan_term_years=loan_term_years,
         )
+    
+    def to_dict(self): #this is for calc engine.run - return inputs as plain dict
+        return {
+            "annual_income": self.annual_income,
+            "deposit": self.deposit,
+            "property_type": self.property_type,
+            "horizon": self.horizon,
+            "mortgage_rate": self.mortgage_rate,
+            "return_rate": self.return_rate,
+            "loan_term_years": self.loan_term_years,
+        }
