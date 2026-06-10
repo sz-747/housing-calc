@@ -7,7 +7,7 @@ class ScenarioStorage:
     def __init__(self, storage_path=None):
         if storage_path is None:
             storage_path = os.path.join(os.path.dirname(__file__), "saved_scenarios.json")
-            self._path = storage_path
+        self._path = storage_path
             
     def save(self, suburb, inputs, result):
         #append one scenario to stoage file
