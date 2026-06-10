@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Dominus - rent or buy{% endblock %}
+
+{% block content %}
+<h1>Dominus</h1>
+<p>Compare renting and buying</p>
+
+<!-- show the error in the html-->
+{% if error %}
+<div class="error">{{ error }}</div>
+{% endif %}
+
+<!-- drop down to pick suburb -->
+<form action="{{ url_for('compare') }}" method="post" class="panel">
+  <label>
+    Suburb
+    <select name="suburb" required>
+      <option value="">-- choose --</option>
+      {% for suburb_name in suburbs %}
+      <option value="{{ suburb_name }}" {% if form_data.get('suburb') == suburb_name %}selected{% endif %}>
+        {{ suburb_name }}
+      </option>
+      {% endfor %}
+    </select>
+  </label>
