@@ -98,3 +98,19 @@
     />
   </label>
 
+  <label>
+    Investment return rate (%)
+    <input
+      type="number"
+      name="return_rate"
+      min="0"
+      step="0.1"
+      value="{{ form_data.get('return_rate', '7') }}"
+      required
+    />
+  </label>
+
+  <button type="submit">Compare options</button>
+</form>
+{% endblock %}
+
