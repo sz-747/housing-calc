@@ -269,3 +269,17 @@ class CalculationEngine:
             "stamp_duty": round(stamp_duty, 2),
             "lmi": round(lmi, 2),
         }
+        
+    def _decide_verdict(self, yearly_breakdown):
+        final_year = yearly_breakdown[-1]
+        buy = final_year["buy_wealth"]
+        rent = final_year["rent_wealth"]
+        larger = max(abs(buy), abs(rent))
+        if larger == 0:
+            return "marginal"
+        diff_pct = abs(buy - rent) / larger
+        if diff_pct < MARGINAL_VERDICT_THRESHOLD:
+            return "marginal"
+        if buy > rent:
+            return "buying"
+        return "renting"
