@@ -62,3 +62,16 @@
       required
     />
   </label>
+
+  <!-- How many years into the future you want the comparison to run-->
+  <label>
+    Horizon (years)
+    <input
+      type="number"
+      name="horizon"
+      min="1"
+      value="{{ form_data.get('horizon', '5') }}"
+      required
+    />
+  </label>
+
