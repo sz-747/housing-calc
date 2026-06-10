@@ -283,3 +283,12 @@ class CalculationEngine:
         if buy > rent:
             return "buying"
         return "renting"
+    
+# these are js some helper methods for reading typed values from dicts
+
+def _assert_dict(self, obj, name):
+    if not isinstance(obj, dict):
+        raise ValueError(f"{name} must be a dict")
+    
+    # this raises a value error if obj isn't a dict
+    # called at the top of run() to catch callers who pass the wrong type before anything else happens
