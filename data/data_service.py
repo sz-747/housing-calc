@@ -52,3 +52,13 @@ class SuburbDataService:
             if not suburbs:
                 raise ValueError("no suburb records found in suburb.csv")
             return suburbs
+        
+    def _parse_float(self, row, key):
+        raw = row.get(key, "").strip()
+        if raw == "":
+            raise ValueError(f"Missing numeric field in CSV: {key}")
+        try:
+            return float(raw)
+        except ValueError as exc:
+            # Keep the original conversion error attached to the new error
+            raise ValueError(f"Invalid numeric field in csv: {key}") from exc
