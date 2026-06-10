@@ -28,3 +28,16 @@ class InputValidator:
     
     def get_errors(self):
         return list(self._errors)
+    
+    def _check_positive_number(self, form_data, key, label):
+        raw = form_data.get(key, "").strip()
+        if raw == "":
+            self._errors.append(f"{label} is required")
+            return
+        try:
+            value = float(raw)
+        except ValueError:
+            self._errors.append(f"{label} must be a number")
+            return
+        if value <= 0:
+            self._errors.append(f"{label} must be greater than zero")
