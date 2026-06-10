@@ -23,3 +23,13 @@
       {% endfor %}
     </select>
   </label>
+
+<!-- property type hard coded-->
+
+  <label>
+    Property type
+    <select name="property_type" required>
+      <option value="house" {% if form_data.get('property_type') == 'house' %}selected{% endif %}>House</option>
+      <option value="unit" {% if form_data.get('property_type') == 'unit' %}selected{% endif %}>Unit</option>
+    </select>
+  </label>
