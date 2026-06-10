@@ -258,5 +258,14 @@ class CalculationEngine:
             "property_type": property_type
             "loan_amount": round(loan_amount, 2),
             "annual_payment": round(monthly_payment * 12, 2),
-            """continue here"""
+            "first_year_monthly_rent_estimate": round(rent_by_year[0] / 12, 2),
+            "property_growth_rate": property_growth,
+            "rent_growth_rate": rent_growth,
+            "annual_ownership_cost_rate": ANNUAL_OWNERSHIP_COST_RATE,
+            "buy_wealth": round(buy_wealth, 2),
+            "rent_wealth": round(rent_wealth, 2),
+            "net_difference": round(buy_wealth - rent_wealth, 2),
+            "monthly_payment": round(monthly_payment, 2),
+            "stamp_duty": round(stamp_duty, 2),
+            "lmi": round(lmi, 2),
         }
