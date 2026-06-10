@@ -32,7 +32,7 @@ class UserInput:
         
         property_type = form.get("property_type", "").strip().lower()
         if property_type not in {"house", "unit"}:
-            raise ValueError("Property type must be house or unit.")
+            raise ValueError("Property type must be house or unit")
         
         horizon = UserInput._parse_positive_int(form, "horizon", "Time horizon")
         mortgage_rate = UserInput._parse_positive_float(form, "mortgage_rate", "Mortgage rate") / 100.0
@@ -74,3 +74,15 @@ class UserInput:
             raise ValueError(f"{label} must be bigger than 0")
         return value
     
+    @staticmethod #same thing but for non negs
+    def _parse_nonneg_float(form, key, label):
+        raw = form.get(key, "").strip()
+        if raw == "":
+            raise ValueError(f"{label} is required")
+        try:
+            value = float(raw)
+        except ValueError:
+            raise ValueError(f"{label} must be a number")
+        if value < 0:
+            raise ValueError(f"{label} must be 0 or more")
+        return value
