@@ -75,3 +75,15 @@
     />
   </label>
 
+  <label>
+    Mortgage rate (%)
+    <input
+      type="number"
+      name="mortgage_rate"
+      min="0.1"
+      step="0.1"
+      value="{{ form_data.get('mortgage_rate', '6') }}"
+      required
+    />
+  </label>
+
