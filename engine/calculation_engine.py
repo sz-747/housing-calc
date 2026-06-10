@@ -286,30 +286,47 @@ class CalculationEngine:
     
 # these are js some helper methods for reading typed values from dicts
 
-def _assert_dict(self, obj, name):
-    if not isinstance(obj, dict):
-        raise ValueError(f"{name} must be a dict")
-    
-    # this raises a value error if obj isn't a dict
-    # called at the top of run() to catch callers who pass the wrong type before anything else happens
+    def _assert_dict(self, obj, name):
+        if not isinstance(obj, dict):
+            raise ValueError(f"{name} must be a dict")
+        
+        # this raises a value error if obj isn't a dict
+        # called at the top of run() to catch callers who pass the wrong type before anything else happens
 
-def _read_float(self, source, keys, label, default=None, min_value=None):
-    #this reads a float from source using the first matching key in keys
+    def _read_float(self, source, keys, label, default=None, min_value=None):
+        #this reads a float from source using the first matching key in keys
+        
+        value = None
+        for key in keys:
+            if key in source:
+                value = source[key]
+                break
+        if value is None:
+            if default is not None:
+                return default
+            raise ValueError(f"{label} is required")
+        try:
+            value = float(value)
+        except (TypeError, ValueError):
+            raise ValueError(f"{label} must be a number")
+        if min_value is not None and value < min_value:
+            raise ValueError(f"{label} must be at least {min_value}")
+        return value
     
-    value = None
-    for key in keys:
-        if key in source:
-            value = source[key]
-            break
-    if value is None:
-        if default is not None:
-            return default
-        raise ValueError(f"{label} is required")
-    try:
-        value = float(value)
-    except (TypeError, ValueError):
-        raise ValueError(f"{label} must be a number")
-    if min_value is not None and value < min_value:
-        raise ValueError(f"{label} must be at least {min_value}")
-    return value
-
+    def _read_int(self, source, keys, label, *, default=None, min_value=None):
+        value = None
+        for key in keys:
+            if key in source:
+                value = source[key]
+                break
+        if value is None:
+            if default is not None:
+                return default
+            raise ValueError(f"{label} is required")
+        try:
+            value = int(value)
+        except (TypeError, ValueError):
+            raise ValueError(f"{label} must be an integer")
+        if min_value is not None and value < min_value:
+            raise ValueError(f"{label} must be at least {min_value}")
+        return value
