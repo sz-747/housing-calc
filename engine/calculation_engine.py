@@ -330,3 +330,15 @@ class CalculationEngine:
         if min_value is not None and value < min_value:
             raise ValueError(f"{label} must be at least {min_value}")
         return value
+    
+    def _read_any(self, source, keys, label):
+        for key in keys:
+            if key in source:
+                return source[key]
+        raise ValueError(f"{label} is required")
+
+    def _read_property_type(self, raw):
+        normalised = str(raw).strip().lower()
+        if normalised not in {"house", "unit"}:
+            raise ValueError(f"property type must be 'house' or 'unit', got '{raw}'")
+        return normalised
