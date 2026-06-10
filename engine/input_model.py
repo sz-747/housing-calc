@@ -86,3 +86,16 @@ class UserInput:
         if value < 0:
             raise ValueError(f"{label} must be 0 or more")
         return value
+    
+    @staticmethod
+    def _parse_positive_int(form, key, label):
+        raw = form.get(key, "").strip()
+        if raw == "":
+            raise ValueError(f"{label} is required")
+        try:
+            value = int(raw)
+        except ValueError:
+            raise ValueError(f"{label} must be whole number")
+        if value < 1:
+            raise ValueError(f"{label} must be at least 1")
+        return value
