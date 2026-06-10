@@ -203,3 +203,60 @@ class CalculationEngine:
             cumulative_mortgage_paid = cumulative_mortgage_paid + annual_payment
             cumulative_buy_cash = (deposit + stamp_duty + lmi + cumulative_mortgage_paid + cumulative_ownership_cost)
             buy_wealth = equity - cumulative_buy_cash
+            net_cashflow = annual_payment + annual_ownership_cost
+            rows.append({
+                "year": year, 
+                "property_value": round(property_value, 2),
+                "mortgage_balance": round(property_value, 2),
+                "buy_wealth": round(buy_wealth, 2),
+                "monthly_payment": round(monthly_payment, 2),
+                "net_cashflow": round(net_cashflow, 2),
+                "cumulative_cashflow": round(cumulative_buy_cash, 2),
+            })
+        return rows
+    
+    def _build_rent_projection(self, years, rent_by_year, invested_balances):
+        cumulative_rent_paid = 0.0
+        rows = []
+        for year_index in range(years):
+            year = year_index + 1
+            annual_rent = rent_by_year[year_index]
+            cumulative_rent_paid = cumulative_rent_paid + annual_rent
+            invested_value = invested_balances[year_index]
+            rent_wealth = invested_value - cumulative_rent_paid
+            rows.append({
+                "year": year,
+                "annual_rent": round(annual_rent, 2).
+                "cumulative_rent_paid": round(cumulative_rent_paid, 2),
+                "rent_wealth": round(rent_wealth, 2),
+                "net_cashflow": round(annual_rent, 2),
+            })
+        return rows
+    
+    def _build_summary(
+        self, 
+        yearly_breakdown,
+        rent_by_year,
+        property_price,
+        deposit,
+        annual_income,
+        mortgage_rate,
+        return_rate,
+        property_growth,
+        rent_growth,
+        stamp_duty,
+        lmi,
+        monthly_payment,
+        property_type,
+        loan_amount,
+    ):
+        
+        final_year = yearly_breakdown[-1]
+        buy_wealth = final_year["buy_wealth"]
+        rent_wealth = final_year["rent_wealth"]
+        return {
+            "property_type": property_type
+            "loan_amount": round(loan_amount, 2),
+            "annual_payment": round(monthly_payment * 12, 2),
+            """continue here"""
+        }
