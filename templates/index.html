@@ -33,3 +33,20 @@
       <option value="unit" {% if form_data.get('property_type') == 'unit' %}selected{% endif %}>Unit</option>
     </select>
   </label>
+
+<!-- 
+  each field remembers what the user typed last time
+  if the page is fresh, it shows an appropriate starting number
+  The name on each field is how the server reads it when the form is submitted  
+-->
+  <label>
+    Annual income ($)
+    <input
+      type="number"
+      name="annual_income"
+      min="1"
+      step="100"
+      value="{{ form_data.get('annual_income', '') }}"
+      required
+    />
+  </label>
