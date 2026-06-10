@@ -293,7 +293,7 @@ def _assert_dict(self, obj, name):
     # this raises a value error if obj isn't a dict
     # called at the top of run() to catch callers who pass the wrong type before anything else happens
 
-def _read_float(self, source, keys, label, default=None):
+def _read_float(self, source, keys, label, default=None, min_value=None):
     #this reads a float from source using the first matching key in keys
     
     value = None
