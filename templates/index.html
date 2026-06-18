@@ -1,116 +1,13 @@
-{% extends "base.html" %}
-{% block title %}Dominus - rent or buy{% endblock %}
-
-{% block content %}
-<h1>Dominus</h1>
-<p>Compare renting and buying</p>
-
-<!-- show the error in the html-->
-{% if error %}
-<div class="error">{{ error }}</div>
-{% endif %}
-
-<!-- drop down to pick suburb -->
-<form action="{{ url_for('compare') }}" method="post" class="panel">
-  <label>
-    Suburb
-    <select name="suburb" required>
-      <option value="">-- choose --</option>
-      {% for suburb_name in suburbs %}
-      <option value="{{ suburb_name }}" {% if form_data.get('suburb') == suburb_name %}selected{% endif %}>
-        {{ suburb_name }}
-      </option>
-      {% endfor %}
-    </select>
-  </label>
-
-<!-- property type hard coded-->
-
-  <label>
-    Property type
-    <select name="property_type" required>
-      <option value="house" {% if form_data.get('property_type') == 'house' %}selected{% endif %}>House</option>
-      <option value="unit" {% if form_data.get('property_type') == 'unit' %}selected{% endif %}>Unit</option>
-    </select>
-  </label>
-
-<!-- 
-  each field remembers what the user typed last time
-  if the page is fresh, it shows an appropriate starting number
-  The name on each field is how the server reads it when the form is submitted  
--->
-  <label>
-    Annual income ($)
-    <input
-      type="number"
-      name="annual_income"
-      min="1"
-      step="100"
-      value="{{ form_data.get('annual_income', '') }}"
-      required
-    />
-  </label>
-
-  <label>
-    Savings ($)
-    <input
-      type="number"
-      name="deposit"
-      min="1"
-      step="100"
-      value="{{ form_data.get('deposit', '') }}"
-      required
-    />
-  </label>
-
-  <!-- How many years into the future you want the comparison to run-->
-  <label>
-    Horizon (years)
-    <input
-      type="number"
-      name="horizon"
-      min="1"
-      value="{{ form_data.get('horizon', '5') }}"
-      required
-    />
-  </label>
-
-  <label>
-    Mortgage rate (%)
-    <input
-      type="number"
-      name="mortgage_rate"
-      min="0.1"
-      step="0.1"
-      value="{{ form_data.get('mortgage_rate', '6') }}"
-      required
-    />
-  </label>
-
-  <label>
-    Loan term (years)
-    <input
-      type="number"
-      name="loan_term_years"
-      min="1"
-      value="{{ form_data.get('loan_term_years', '30') }}"
-      required
-    />
-  </label>
-
-  <label>
-    Investment return rate (%)
-    <input
-      type="number"
-      name="return_rate"
-      min="0"
-      step="0.1"
-      value="{{ form_data.get('return_rate', '7') }}"
-      required
-    />
-  </label>
-
-  <button type="submit">Compare options</button>
-</form>
-{% endblock %}
-
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Dominus | Sydney Rent vs Buy</title>
+    <link rel="stylesheet" href="css/base.css" />
+    <link rel="stylesheet" href="css/nav.css" />
+    <link rel="stylesheet" href="css/form.css" />
+    <link rel="stylesheet" href="css/results.css" />
+    <link rel="stylesheet" href="css/chart.css" />
+  </head>
+</html>
