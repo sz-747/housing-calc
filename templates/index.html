@@ -11,3 +11,30 @@
     <link rel="stylesheet" href="css/chart.css" />
   </head>
 </html>
+
+<body>
+  <nav>
+    <a href="index.html" class="nav-brand">Dominus</a>
+    <a href="learn.html">Learn</a>
+  </nav>
+  <main class="container">
+    <h1>Dominus</h1>
+    <p>Compare renting and buying over your chosen horizon.</p>
+
+    <!-- error banner -> shown only when validation fails -->
+    <div class="error">Please choose a suburb.</div>
+
+    <form action="results.html" method="post" class="panel">
+      <label>
+        Suburb
+        <select name="suburb" required>
+          <option value="">-- choose --</option>
+          <option value="Parramatta">Parramatta</option>
+          <option value="Chatswood">Chatswood</option>
+          <option value="Penrith">Penrith</option>
+          <!-- bruh think of way to load this from the data not typing out 50 suburbs-->
+        </select>
+      </label>
+    </form>
+  </main>
+</body>
