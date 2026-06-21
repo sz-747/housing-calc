@@ -112,6 +112,28 @@ class ComparisonResult:
         self.breakeven_year = data["breakeven_year"]
         self.affordability = data["affordability"]
 
+    def explanation(self):
+        upfront = self.summary["stamp_duty"] + self.summary["lmi"]
+        gap = abs(self.summary["net_difference"])
+        buy_w = self.summary["buy_wealth"]
+        rent_w = self.summary["rent_wealth"]
+        growth_rate = self.summary["property_growth_rate"] * 100
+
+        if self.verdict == "buying":
+            first = f"Buying wins here. You come out ${gap:,.0f} better off compared to renting."
+            if upfront > gap * 0.4:
+                second = f"Yeah, you fork out ${upfront:,.0f} upfront in stamp duty and LMI, but your property clocking {growth_rate:.1f}% growth a year stacks your wealth up to ${buy_w:,.0f}. That smashes the ${rent_w:,.0f} you'd end up with if you just rented and chucked your deposit in the market."
+            else:
+                second = f"Your property clocking {growth_rate:.1f}% growth a year stacks your wealth up to ${buy_w:,.0f}. That smashes the ${rent_w:,.0f} you'd end up with if you just rented and chucked your deposit in the market."
+        elif self.verdict == "renting":
+            first = f"Renting wins here. You come out ${gap:,.0f} better off compared to buying."
+            second = f"Buying hits you with ${upfront:,.0f} upfront in stamp duty and LMI before you even start paying off the mortgage. That drags your buy wealth down to ${buy_w:,.0f}, while renting and investing your deposit quietly builds to ${rent_w:,.0f}."
+        else:
+            first = "Honestly, it's a coin flip. Buying and renting come out pretty much the same."
+            second = f"Buying lands at ${buy_w:,.0f}, renting lands at ${rent_w:,.0f}, only ${gap:,.0f} in it. Tweak your assumed growth rate or investment return and the answer could easily flip."
+
+        return f"{first} {second}"
+
     def to_dict(self):
         #this returns the result as a plain dict for scenario stage save
         return {

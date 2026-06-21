@@ -8,6 +8,7 @@
 <section class="panel">
   {# verdict string becomes the CSS class e.g. verdict-buying #}
   <h2>Verdict: <span class="verdict-{{ result.verdict }}">{{ result.verdict | capitalize }}</span></h2>
+  <p class="explanation">{{ result.explanation() }}</p>
   <p>Property type: {{ result.summary.property_type | capitalize }}</p>
   {# rates are decimals (0.06) so multiply by 100 to show as percent #}
   <p>Horizon: {{ inputs.horizon }} years &nbsp;|&nbsp; Mortgage rate: {{ "%.2f"|format(inputs.mortgage_rate * 100) }}% &nbsp;|&nbsp; Investment return: {{ "%.2f"|format(inputs.return_rate * 100) }}%</p>
