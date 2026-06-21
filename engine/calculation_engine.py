@@ -207,7 +207,7 @@ class CalculationEngine:
             rows.append({
                 "year": year, 
                 "property_value": round(property_value, 2),
-                "mortgage_balance": round(property_value, 2),
+                "mortgage_balance": round(mortgage_balance, 2),
                 "buy_wealth": round(buy_wealth, 2),
                 "monthly_payment": round(monthly_payment, 2),
                 "net_cashflow": round(net_cashflow, 2),
@@ -226,7 +226,7 @@ class CalculationEngine:
             rent_wealth = invested_value - cumulative_rent_paid
             rows.append({
                 "year": year,
-                "annual_rent": round(annual_rent, 2).
+                "annual_rent": round(annual_rent, 2),
                 "cumulative_rent_paid": round(cumulative_rent_paid, 2),
                 "rent_wealth": round(rent_wealth, 2),
                 "net_cashflow": round(annual_rent, 2),
@@ -255,7 +255,7 @@ class CalculationEngine:
         buy_wealth = final_year["buy_wealth"]
         rent_wealth = final_year["rent_wealth"]
         return {
-            "property_type": property_type
+            "property_type": property_type,
             "loan_amount": round(loan_amount, 2),
             "annual_payment": round(monthly_payment * 12, 2),
             "first_year_monthly_rent_estimate": round(rent_by_year[0] / 12, 2),
