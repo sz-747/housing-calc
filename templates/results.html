@@ -2,13 +2,15 @@
 {% block title %}Your Results{% endblock %}
 {% block content %}
 
-<h1>Result for Parramatta</h1>
+<h1>Result for {{ suburb }}</h1>
 <a href="{{ url_for('home') }}" class="back-link">&#8592; Run another scenario</a>
 
 <section class="panel">
-  <h2>Verdict: <span class="verdict-buying">Buying</span></h2>
-  <p>Property type: House</p>
-  <p>Horizon: 5 years &nbsp;|&nbsp; Mortgage rate: 6.00% &nbsp;|&nbsp; Investment return: 7.00%</p>
+  {# verdict string becomes the CSS class e.g. verdict-buying #}
+  <h2>Verdict: <span class="verdict-{{ result.verdict }}">{{ result.verdict | capitalize }}</span></h2>
+  <p>Property type: {{ result.summary.property_type | capitalize }}</p>
+  {# rates are decimals (0.06) so multiply by 100 to show as percent #}
+  <p>Horizon: {{ inputs.horizon }} years &nbsp;|&nbsp; Mortgage rate: {{ "%.2f"|format(inputs.mortgage_rate * 100) }}% &nbsp;|&nbsp; Investment return: {{ "%.2f"|format(inputs.return_rate * 100) }}%</p>
 </section>
 
 <section class="panel">
@@ -21,24 +23,25 @@
 <section class="panel">
   <h2>Summary</h2>
   <table>
-    <tr><th>Loan amount</th><td>$760,000.00</td></tr>
-    <tr><th>Monthly repayment</th><td>$4,557.42</td></tr>
-    <tr><th>Annual payment</th><td>$54,689.04</td></tr>
-    <tr><th>Stamp duty</th><td>$31,090.00</td></tr>
-    <tr><th>LMI</th><td>$0.00</td></tr>
-    <tr><th>First-year monthly rent (est.)</th><td>$2,850.00</td></tr>
-    <tr><th>Property growth rate</th><td>5.20%</td></tr>
-    <tr><th>Buy wealth (year 5)</th><td>$312,480.00</td></tr>
-    <tr><th>Rent wealth (year 5)</th><td>$268,940.00</td></tr>
-    <tr><th>Net difference</th><td>$43,540.00</td></tr>
-    <tr><th>Breakeven year</th><td>4</td></tr>
+    <tr><th>Loan amount</th><td>{{ result.summary.loan_amount | money }}</td></tr>
+    <tr><th>Monthly repayment</th><td>{{ result.summary.monthly_payment | money }}</td></tr>
+    <tr><th>Annual payment</th><td>{{ result.summary.annual_payment | money }}</td></tr>
+    <tr><th>Stamp duty</th><td>{{ result.summary.stamp_duty | money }}</td></tr>
+    <tr><th>LMI</th><td>{{ result.summary.lmi | money }}</td></tr>
+    <tr><th>First-year monthly rent (est.)</th><td>{{ result.summary.first_year_monthly_rent_estimate | money }}</td></tr>
+    <tr><th>Property growth rate</th><td>{{ "%.2f"|format(result.summary.property_growth_rate * 100) }}%</td></tr>
+    <tr><th>Buy wealth (year {{ inputs.horizon }})</th><td>{{ result.summary.buy_wealth | money }}</td></tr>
+    <tr><th>Rent wealth (year {{ inputs.horizon }})</th><td>{{ result.summary.rent_wealth | money }}</td></tr>
+    <tr><th>Net difference</th><td>{{ result.summary.net_difference | money }}</td></tr>
+    <tr><th>Breakeven year</th><td>{{ result.breakeven_year }}</td></tr>
   </table>
 </section>
 
 <section class="panel">
   <h2>Affordability check</h2>
-  <p class="good">Looks affordable with your inputs.</p>
-  <p>Estimated maximum purchase price: $980,000.00</p>
+  {# picks green or red class based on affordability #}
+  <p class="{{ 'good' if result.affordability.affordable else 'bad' }}">{{ result.affordability.message }}</p>
+  <p>Estimated maximum purchase price: {{ result.affordability.max_purchase_price | money }}</p>
 </section>
 
 <section class="panel">
@@ -55,9 +58,9 @@
       </tr>
     </thead>
     <tbody>
-      <tr><td>1</td><td>$998,400.00</td><td>$750,120.00</td><td>$248,280.00</td><td>$4,557.42</td><td>-$64,689.04</td></tr>
-      <tr><td>2</td><td>$1,050,316.80</td><td>$739,580.00</td><td>$310,736.80</td><td>$4,557.42</td><td>-$55,200.00</td></tr>
-      <tr><td>3</td><td>$1,104,933.27</td><td>$728,390.00</td><td>$376,543.27</td><td>$4,557.42</td><td>-$55,800.00</td></tr>
+      {% for row in result.buy_projection %}
+      <tr><td>{{ row.year }}</td><td>{{ row.property_value | money }}</td><td>{{ row.mortgage_balance | money }}</td><td>{{ row.buy_wealth | money }}</td><td>{{ row.monthly_payment | money }}</td><td>{{ row.net_cashflow | money }}</td></tr>
+      {% endfor %}
     </tbody>
   </table>
 </section>
@@ -75,22 +78,17 @@
       </tr>
     </thead>
     <tbody>
-      <tr><td>1</td><td>$34,200.00</td><td>$34,200.00</td><td>$222,800.00</td><td>-$34,200.00</td></tr>
-      <tr><td>2</td><td>$35,226.00</td><td>$69,426.00</td><td>$238,396.00</td><td>-$35,226.00</td></tr>
-      <tr><td>3</td><td>$36,282.78</td><td>$105,708.78</td><td>$254,883.72</td><td>-$36,282.78</td></tr>
+      {% for row in result.rent_projection %}
+      <tr><td>{{ row.year }}</td><td>{{ row.annual_rent | money }}</td><td>{{ row.cumulative_rent_paid | money }}</td><td>{{ row.rent_wealth | money }}</td><td>{{ row.net_cashflow | money }}</td></tr>
+      {% endfor %}
     </tbody>
   </table>
 </section>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
 <script>
-  const breakdown = [
-    { year: 1, buy_wealth: 248280, rent_wealth: 222800 },
-    { year: 2, buy_wealth: 310736, rent_wealth: 238396 },
-    { year: 3, buy_wealth: 376543, rent_wealth: 254883 },
-    { year: 4, buy_wealth: 445900, rent_wealth: 261500 },
-    { year: 5, buy_wealth: 312480, rent_wealth: 268940 }
-  ];
+  // tojson dumps the Python list into a JS array before the page hits the browser
+  const breakdown = {{ result.yearly_breakdown | tojson }};
 
   const labels = [];
   const buyData = [];
