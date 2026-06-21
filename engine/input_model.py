@@ -9,7 +9,7 @@ class UserInput:
         property_type,
         horizon,
         mortgage_rate,
-        return_rate_,
+        return_rate,
         loan_term_years,
     ):
         self.suburb = suburb
