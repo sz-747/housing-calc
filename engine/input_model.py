@@ -100,26 +100,26 @@ class UserInput:
             raise ValueError(f"{label} must be at least 1")
         return value
     
-    class ComparisonResult:
-        # this wraps the dict returned by CalcEngine.run for use in templates
-        
-        def __init__(self, data):
-            self.verdict = data["verdict"]
-            self.summary = data["summary"]
-            self.buy_projection = data["buy_projection"]
-            self.rent_projection = data["rent_projection"]
-            self.yearly_breakdown = data["yearly_breakdown"]
-            self.breakeven_year = data["breakeven_year"]
-            self.affordability = data["affordability"]
-            
-        def to_dict(self):
-            #this returns the result as a plain dict for scenario stage save
-            return {
-            "verdict": self.verdict,
-            "summary": self.summary,
-            "buy_projection": self.buy_projection,
-            "rent_projection": self.rent_projection,
-            "yearly_breakdown": self.yearly_breakdown,
-            "breakeven_year": self.breakeven_year,
-            "affordability": self.affordability,
-        }
+class ComparisonResult:
+    # this wraps the dict returned by CalcEngine.run for use in templates
+
+    def __init__(self, data):
+        self.verdict = data["verdict"]
+        self.summary = data["summary"]
+        self.buy_projection = data["buy_projection"]
+        self.rent_projection = data["rent_projection"]
+        self.yearly_breakdown = data["yearly_breakdown"]
+        self.breakeven_year = data["breakeven_year"]
+        self.affordability = data["affordability"]
+
+    def to_dict(self):
+        #this returns the result as a plain dict for scenario stage save
+        return {
+        "verdict": self.verdict,
+        "summary": self.summary,
+        "buy_projection": self.buy_projection,
+        "rent_projection": self.rent_projection,
+        "yearly_breakdown": self.yearly_breakdown,
+        "breakeven_year": self.breakeven_year,
+        "affordability": self.affordability,
+    }
