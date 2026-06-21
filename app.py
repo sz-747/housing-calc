@@ -39,6 +39,8 @@ def compare():
     suburb_data = suburb_service.get_suburb(user_input.suburb)
     result = ComparisonResult(engine.run(user_input.to_dict(), suburb_data))
 
+    storage.save(user_input.suburb, user_input.to_dict(), result.to_dict())
+
     return render_template(
         "results.html",
         suburb=user_input.suburb,
@@ -50,6 +52,15 @@ def compare():
 def compare_get_redirect():
     return redirect(url_for("home"))
 
+
+@app.route("/scenarios")
+def scenarios():
+    return render_template("scenarios.html", scenarios=storage.load_all())
+
+@app.route("/scenarios/delete/<int:index>", methods=["POST"])
+def delete_scenario(index):
+    storage.delete(index)
+    return redirect(url_for("scenarios"))
 
 @app.route("/learn")
 def learn():
