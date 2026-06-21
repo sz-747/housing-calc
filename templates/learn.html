@@ -1,24 +1,8 @@
 <!-- This is the page that is used to inform what the metrics like stamp duty actually mean, probably more like a landing page tbh-->
 
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Learn Dominus</title>
-    <link rel="stylesheet" href="../static/css/base.css" />
-    <link rel="stylesheet" href="../static/css/nav.css" />
-    <link rel="stylesheet" href="../static/css/form.css" />
-    <link rel="stylesheet" href="../static/css/results.css" />
-    <link rel="stylesheet" href="../static/css/chart.css" />
-  </head>
-  <body>
-    <nav>
-      <a href="index.html" class="nav-brand">Dominus</a>
-      <a href="learn.html">Learn</a>
-    </nav>
-
-    <main class = "container" >
+{% extends "base.html" %}
+{% block title %}Learn | Dominus{% endblock %}
+{% block content %}
         <h1> How Dominus works </h1>
         <p> Dominus compares the financial outcome of renting vs buying a Sydney property over your chosen time horizon </p>
 
@@ -34,6 +18,4 @@
           <p><strong>LMI</strong> is charged when deposit is under 20% </p>
         </section>
 
-    </main>
-  </body>
-</html>
+{% endblock %}
