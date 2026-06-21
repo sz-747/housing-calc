@@ -8,7 +8,7 @@ class SuburbDataService:
         if csv_path is None:
             csv_path = os.path.join(os.path.dirname(__file__), "suburbs.csv")
         self._csv_path = csv_path
-        self._surburbs = None
+        self._suburbs = None
         
     def get_suburb(self, name):
         # this returns the data dictionary for one subrub or raise error
@@ -38,7 +38,7 @@ class SuburbDataService:
                 if suburb == "" or suburb == "suburb":
                     continue
                 try:
-                    suburb[suburb] = {
+                    suburbs[suburb] = {
                         "suburb": suburb,
                         "median_house": self._parse_float(row, "median_house"),
                         "median_unit": self._parse_float(row, "median_unit"),
