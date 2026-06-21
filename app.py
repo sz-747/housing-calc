@@ -17,7 +17,7 @@ engine = CalculationEngine()
 def home():
     return render_template(
         "index.html",
-        suburbs=list_suburbs(),
+        suburbs=suburb_service.list_suburbs(),
         form_data={},
         error=None,
     )
@@ -32,9 +32,13 @@ def compare():
             "index.html",
             suburbs=suburb_service.list_suburbs(),
             form_data=form_data,
-            error=str(error),
+            error=validator.errors[0],
         )
     
+    user_input = UserInput.from_form(request.form)
+    suburb_data = suburb_service.get_suburb(user_input.suburb)
+    result = ComparisonResult(engine.run(user_input.to_dict(), suburb_data))
+
     return render_template(
         "results.html",
         suburb=user_input.suburb,
@@ -51,6 +55,9 @@ def compare_get_redirect():
 def learn():
     return render_template("learn.html")
 
+
+def _format_money(value):
+    return f"${value:,.2f}"
 
 app.jinja_env.filters["money"] = _format_money
 
