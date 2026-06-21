@@ -39,7 +39,7 @@ class UserInput:
         return_rate = UserInput._parse_nonneg_float(form, "return_rate", "Investment return rate") / 100.0
         loan_term_years = UserInput._parse_positive_int(form, "loan_term_years", "Loan term")
 
-    return UserInput(
+        return UserInput(
             suburb=suburb,
             annual_income=annual_income,
             deposit=deposit,
