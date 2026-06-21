@@ -20,6 +20,14 @@ class ScenarioStorage:
         with open(self._path, "w", encoding="utf-8") as file:
             json.dump(scenarios, file, indent=2)
             
+    def delete(self, index):
+        # remove one scenario by its position in the list
+        scenarios = self.load_all()
+        if 0 <= index < len(scenarios):
+            scenarios.pop(index)
+            with open(self._path, "w", encoding="utf-8") as file:
+                json.dump(scenarios, file, indent=2)
+
     def load_all(self):
         #returns all saved scenarios as a list of dicts
         if not os.path.exists(self._path):
