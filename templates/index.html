@@ -1,37 +1,18 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Dominus | Sydney Rent vs Buy</title>
-    <link rel="stylesheet" href="../static/css/base.css" />
-    <link rel="stylesheet" href="../static/css/nav.css" />
-    <link rel="stylesheet" href="../static/css/form.css" />
-    <link rel="stylesheet" href="../static/css/results.css" />
-    <link rel="stylesheet" href="../static/css/chart.css" />
-  </head>
-
-  <body>
-    <nav>
-      <a href="index.html" class="nav-brand">Dominus</a>
-      <a href="learn.html">Learn</a>
-    </nav>
-    <main class="container">
+{% extends "base.html" %}
+{% block title %}Dominus | Sydney Rent vs Buy{% endblock %}
+{% block content %}
       <h1>Dominus</h1>
       <p>Compare renting and buying over your chosen horizon.</p>
 
       <!-- error banner -> shown only when validation fails -->
-      <div class="error">Please choose a suburb.</div>
+      {% if error %}<div class="error">{{ error }}</div>{% endif %}
 
-      <form action="results.html" method="post" class="panel">
+      <form action="{{ url_for('compare') }}" method="post" class="panel">
         <label>
           Suburb
           <select name="suburb" required>
             <option value="">-- choose --</option>
-            <option value="Parramatta">Parramatta</option>
-            <option value="Chatswood">Chatswood</option>
-            <option value="Penrith">Penrith</option>
-            <!-- bruh think of way to load this from the data not typing out 50 suburbs-->
+            {% for s in suburbs %}<option value="{{ s }}">{{ s }}</option>{% endfor %}
           </select>
         </label>
 
@@ -109,6 +90,4 @@
 
         <button type="submit">Compare options</button>
       </form>
-    </main>
-  </body>
-</html>
+{% endblock %}
