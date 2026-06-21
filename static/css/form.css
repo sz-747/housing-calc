@@ -1,0 +1,59 @@
+form.panel {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  max-width: 480px;
+  border-bottom: none;
+}
+
+label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+}
+
+input[type="number"],
+input[type="text"],
+select {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text-primary);
+  font-size: 0.97rem;
+  padding: 0.45rem 0.75rem;
+  width: 100%;
+}
+
+input:focus, select:focus {
+  outline: none;
+}
+
+/* hide the up/down spinner arrows on number inputs (Chrome/Safari, then Firefox) */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+button[type="submit"] {
+  background: var(--accent);
+  border: none;
+  border-radius: 6px;
+  color: #fff;
+  cursor: pointer;
+  font-size: 0.97rem;
+  font-weight: 600;
+  padding: 0.6rem 1.4rem;
+  width: fit-content;
+  margin-top: 0.25rem;
+}
+
+button[type="submit"]:hover {
+  background: var(--accent-hover);
+}
