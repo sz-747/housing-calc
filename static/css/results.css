@@ -49,6 +49,20 @@ tr:nth-child(even) td {
   text-transform: uppercase;
 }
 
+.btn-load {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  text-decoration: none;
+  border: 1px solid var(--border);
+  padding: 0.25rem 0.6rem;
+  border-radius: 3px;
+}
+
+.btn-load:hover {
+  color: var(--text-primary);
+  border-color: var(--text-secondary);
+}
+
 .scenario .actions {
   display: flex;
   align-items: center;

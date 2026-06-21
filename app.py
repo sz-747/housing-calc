@@ -57,6 +57,20 @@ def compare_get_redirect():
 def scenarios():
     return render_template("scenarios.html", scenarios=storage.load_all())
 
+@app.route("/scenarios/load/<int:index>")
+def load_scenario(index):
+    scenarios = storage.load_all()
+    if index < 0 or index >= len(scenarios):
+        return redirect(url_for("home"))
+    s = scenarios[index]
+    result = ComparisonResult(s["result"])
+    return render_template(
+        "results.html",
+        suburb=s["suburb"],
+        result=result,
+        inputs=s["inputs"],
+    )
+
 @app.route("/scenarios/delete/<int:index>", methods=["POST"])
 def delete_scenario(index):
     storage.delete(index)
