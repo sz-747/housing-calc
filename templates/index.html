@@ -4,78 +4,111 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Dominus | Sydney Rent vs Buy</title>
-    <link rel="stylesheet" href="css/base.css" />
-    <link rel="stylesheet" href="css/nav.css" />
-    <link rel="stylesheet" href="css/form.css" />
-    <link rel="stylesheet" href="css/results.css" />
-    <link rel="stylesheet" href="css/chart.css" />
+    <link rel="stylesheet" href="../static/css/base.css" />
+    <link rel="stylesheet" href="../static/css/nav.css" />
+    <link rel="stylesheet" href="../static/css/form.css" />
+    <link rel="stylesheet" href="../static/css/results.css" />
+    <link rel="stylesheet" href="../static/css/chart.css" />
   </head>
-</html>
 
-<body>
-  <nav>
-    <a href="index.html" class="nav-brand">Dominus</a>
-    <a href="learn.html">Learn</a>
-  </nav>
-  <main class="container">
-    <h1>Dominus</h1>
-    <p>Compare renting and buying over your chosen horizon.</p>
+  <body>
+    <nav>
+      <a href="index.html" class="nav-brand">Dominus</a>
+      <a href="learn.html">Learn</a>
+    </nav>
+    <main class="container">
+      <h1>Dominus</h1>
+      <p>Compare renting and buying over your chosen horizon.</p>
 
-    <!-- error banner -> shown only when validation fails -->
-    <div class="error">Please choose a suburb.</div>
+      <!-- error banner -> shown only when validation fails -->
+      <div class="error">Please choose a suburb.</div>
 
-    <form action="results.html" method="post" class="panel">
-      <label>
-        Suburb
-        <select name="suburb" required>
-          <option value="">-- choose --</option>
-          <option value="Parramatta">Parramatta</option>
-          <option value="Chatswood">Chatswood</option>
-          <option value="Penrith">Penrith</option>
-          <!-- bruh think of way to load this from the data not typing out 50 suburbs-->
-        </select>
-      </label>
+      <form action="results.html" method="post" class="panel">
+        <label>
+          Suburb
+          <select name="suburb" required>
+            <option value="">-- choose --</option>
+            <option value="Parramatta">Parramatta</option>
+            <option value="Chatswood">Chatswood</option>
+            <option value="Penrith">Penrith</option>
+            <!-- bruh think of way to load this from the data not typing out 50 suburbs-->
+          </select>
+        </label>
 
-      <label>
-        Property type
-        <select name="property_type" required>
-          <option value="house">House</option>
-          <option value="unit">Unit</option>
-        </select>
-      </label>
+        <label>
+          Property type
+          <select name="property_type" required>
+            <option value="house">House</option>
+            <option value="unit">Unit</option>
+          </select>
+        </label>
 
-      <label>
-        Annual income ($)
-        <input type="number" name="annual_income" min="1" step="100" value="" required/>
-      </label>
+        <label>
+          Annual income ($)
+          <input
+            type="number"
+            name="annual_income"
+            min="1"
+            step="100"
+            value=""
+            required
+          />
+        </label>
 
-      <label>
-        Deposit / savings ($)
-        <input type="number" name="deposit" min="1" step="100" value="" required/>
-      </label>
+        <label>
+          Deposit / savings ($)
+          <input
+            type="number"
+            name="deposit"
+            min="1"
+            step="100"
+            value=""
+            required
+          />
+        </label>
 
-      <label>
-        Horizon (years)
-        <input type="number" name="horizon" min="1" value="5" required/>
-      </label>
+        <label>
+          Horizon (years)
+          <input type="number" name="horizon" min="1" value="5" required />
+        </label>
 
-      <label>
-        Mortgage rate (%)
-        <input type="number" name="mortgage_rate" min="0.1" step="0.1" value="6" required/>
-      </label>
+        <label>
+          Mortgage rate (%)
+          <input
+            type="number"
+            name="mortgage_rate"
+            min="0.1"
+            step="0.1"
+            value="6"
+            required
+          />
+        </label>
 
-      <label>
-        Loan term (years)
-        <input type="number" name="loan_term_years" min="1" value="30" required/>
-      </label>
+        <label>
+          Loan term (years)
+          <input
+            type="number"
+            name="loan_term_years"
+            min="1"
+            value="30"
+            required
+          />
+        </label>
 
-      <label>
-        Investment return rate (%)
-        <input type="number" name="return_rate" min="0" step="0.1" value="7" required/>
-      </label>
+        <label>
+          Investment return rate (%)
+          <input
+            type="number"
+            name="return_rate"
+            min="0"
+            step="0.1"
+            value="7"
+            required
+          />
+        </label>
 
-      <button type="submit">Compare options</button>
-    </form>
-  </main>
-</body>
+        <button type="submit">Compare options</button>
+      </form>
+    </main>
+  </body>
 </html>
