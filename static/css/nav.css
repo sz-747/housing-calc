@@ -1,0 +1,24 @@
+nav {
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border);
+  padding: 0.7rem 2.5rem;
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+}
+
+nav a {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  text-decoration: none;
+}
+
+nav a:hover {
+  color: var(--text-primary);
+}
+
+.nav-brand {
+  font-weight: 600;
+  color: var(--text-primary) !important;
+  font-size: 1rem !important;
+}
