@@ -3,21 +3,34 @@
 {% block content %}
 
 <h1>Saved scenarios</h1>
+<p>Comparisons you've run. Stored locally in saved_scenarios.json.</p>
 
 {% if scenarios %}
   {% for s in scenarios %}
-  <section class="panel">
-    <h2>{{ s.suburb }} — <span class="verdict-{{ s.result.verdict }}">{{ s.result.verdict | capitalize }}</span></h2>
-    <p>Horizon: {{ s.inputs.horizon }} years &nbsp;|&nbsp; Deposit: {{ s.inputs.deposit | money }} &nbsp;|&nbsp; Rate: {{ "%.2f"|format(s.inputs.mortgage_rate * 100) }}%</p>
-    <p>
-      Buy wealth: <span class="verdict-buying">{{ s.result.summary.buy_wealth | money }}</span>
-      &nbsp;|&nbsp;
-      Rent wealth: <span class="verdict-renting">{{ s.result.summary.rent_wealth | money }}</span>
-    </p>
-    <form action="{{ url_for('delete_scenario', index=loop.index0) }}" method="post">
-      <button type="submit">Delete</button>
-    </form>
-  </section>
+  <div class="scenario">
+    <div>
+      <div class="suburb">{{ s.suburb }}</div>
+      {# meta line: TYPE · HORIZON · DEPOSIT · VERDICT TAG #}
+      <div class="meta">
+        {{ s.inputs.property_type | upper }}
+        &middot; {{ s.inputs.horizon }} YR
+        &middot; {{ s.inputs.deposit | money }}
+        &middot;
+        {% if s.result.verdict == "buying" %}
+          <span class="verdict-tag buy">BUY &middot; BREAKEVEN YR {{ s.result.breakeven_year if s.result.breakeven_year else "N/A" }}</span>
+        {% elif s.result.verdict == "renting" %}
+          <span class="verdict-tag rent">RENT &middot; NO BREAKEVEN</span>
+        {% else %}
+          <span class="verdict-tag marginal">MARGINAL</span>
+        {% endif %}
+      </div>
+    </div>
+    <div class="actions">
+      <form action="{{ url_for('delete_scenario', index=loop.index0) }}" method="post">
+        <button type="submit">Delete</button>
+      </form>
+    </div>
+  </div>
   {% endfor %}
 {% else %}
   <p>No saved scenarios yet. <a href="{{ url_for('home') }}">Run a comparison</a> to get started.</p>
