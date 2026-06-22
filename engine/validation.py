@@ -22,7 +22,7 @@ class InputValidator:
             
         self._check_positive_number(form_data, "annual_income", "Annual income")
         self._check_positive_number(form_data, "deposit", "Deposit")
-        self._check_positive_integer(form_data, "horizon", "Time horizon", max_value=60)
+        self._check_positive_integer(form_data, "horizon", "Time horizon", max_value=40)
         self._check_positive_number(form_data, "mortgage_rate", "Mortgage rate", max_value=30)
         self._check_positive_integer(form_data, "loan_term_years", "Loan term", max_value=40)
         self._check_nonneg_number(form_data, "return_rate", "Investment return rate", max_value=30)
@@ -38,7 +38,7 @@ class InputValidator:
 
         self._check_positive_number(form_data, "annual_income", "Annual income")
         self._check_positive_number(form_data, "deposit", "Deposit")
-        self._check_positive_integer(form_data, "horizon", "Time horizon", max_value=60)
+        self._check_positive_integer(form_data, "horizon", "Time horizon", max_value=40)
         self._check_positive_number(form_data, "mortgage_rate", "Mortgage rate", max_value=30)
         self._check_positive_integer(form_data, "loan_term_years", "Loan term", max_value=40)
         self._check_nonneg_number(form_data, "return_rate", "Investment return rate", max_value=30)
