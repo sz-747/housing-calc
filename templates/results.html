@@ -1,17 +1,27 @@
-{% extends "base.html" %}
-{% block title %}Your Results{% endblock %}
-{% block content %}
+{% extends "base.html" %} {% block title %}Your Results{% endblock %} {% block
+content %}
 
 <h1>Result for {{ suburb }}</h1>
-<a href="{{ url_for('home') }}" class="back-link">&#8592; Run another scenario</a>
+<a href="{{ url_for('home') }}" class="back-link"
+  >&#8592; Run another scenario</a
+>
 
 <section class="panel">
   {# verdict string becomes the CSS class e.g. verdict-buying #}
-  <h2>Verdict: <span class="verdict-{{ result.verdict }}">{{ result.verdict | capitalize }}</span></h2>
+  <h2>
+    Verdict:
+    <span class="verdict-{{ result.verdict }}"
+      >{{ result.verdict | capitalize }}</span
+    >
+  </h2>
   <p class="explanation">{{ result.explanation() }}</p>
   <p>Property type: {{ result.summary.property_type | capitalize }}</p>
   {# rates are decimals (0.06) so multiply by 100 to show as percent #}
-  <p>Horizon: {{ inputs.horizon }} years &nbsp;|&nbsp; Mortgage rate: {{ "%.2f"|format(inputs.mortgage_rate * 100) }}% &nbsp;|&nbsp; Investment return: {{ "%.2f"|format(inputs.return_rate * 100) }}%</p>
+  <p>
+    Horizon: {{ inputs.horizon }} years &nbsp;|&nbsp; Mortgage rate: {{
+    "%.2f"|format(inputs.mortgage_rate * 100) }}% &nbsp;|&nbsp; Investment
+    return: {{ "%.2f"|format(inputs.return_rate * 100) }}%
+  </p>
 </section>
 
 <section class="panel">
@@ -31,25 +41,90 @@
 <section class="panel">
   <h2>Summary</h2>
   <table>
-    <tr><th>Loan amount</th><td>{{ result.summary.loan_amount | money }}</td></tr>
-    <tr><th>Monthly repayment</th><td>{{ result.summary.monthly_payment | money }}</td></tr>
-    <tr><th>Annual payment</th><td>{{ result.summary.annual_payment | money }}</td></tr>
-    <tr><th>Stamp duty</th><td>{{ result.summary.stamp_duty | money }}</td></tr>
-    <tr><th>LMI</th><td>{{ result.summary.lmi | money }}</td></tr>
-    <tr><th>First-year monthly rent (est.)</th><td>{{ result.summary.first_year_monthly_rent_estimate | money }}</td></tr>
-    <tr><th>Property growth rate</th><td>{{ "%.2f"|format(result.summary.property_growth_rate * 100) }}%</td></tr>
-    <tr><th>Buy wealth (year {{ inputs.horizon }})</th><td>{{ result.summary.buy_wealth | money }}</td></tr>
-    <tr><th>Rent wealth (year {{ inputs.horizon }})</th><td>{{ result.summary.rent_wealth | money }}</td></tr>
-    <tr><th>Net difference</th><td>{{ result.summary.net_difference | money }}</td></tr>
-    <tr><th>Breakeven year</th><td>{{ result.breakeven_year }}</td></tr>
+    <tr>
+      <th>Loan amount</th>
+      <td>{{ result.summary.loan_amount | money }}</td>
+    </tr>
+    <tr>
+      <th>Monthly repayment</th>
+      <td>{{ result.summary.monthly_payment | money }}</td>
+    </tr>
+    <tr>
+      <th>Annual payment</th>
+      <td>{{ result.summary.annual_payment | money }}</td>
+    </tr>
+    <tr>
+      <th>Stamp duty</th>
+      <td>{{ result.summary.stamp_duty | money }}</td>
+    </tr>
+    <tr>
+      <th>LMI</th>
+      <td>{{ result.summary.lmi | money }}</td>
+    </tr>
+    <tr>
+      <th>First-year monthly rent (est.)</th>
+      <td>{{ result.summary.first_year_monthly_rent_estimate | money }}</td>
+    </tr>
+    <tr>
+      <th>Property growth rate</th>
+      <td>{{ "%.2f"|format(result.summary.property_growth_rate * 100) }}%</td>
+    </tr>
+    <tr>
+      <th>Buy wealth (year {{ inputs.horizon }})</th>
+      <td>{{ result.summary.buy_wealth | money }}</td>
+    </tr>
+    <tr>
+      <th>Rent wealth (year {{ inputs.horizon }})</th>
+      <td>{{ result.summary.rent_wealth | money }}</td>
+    </tr>
+    <tr>
+      <th>Net difference</th>
+      <td>{{ result.summary.net_difference | money }}</td>
+    </tr>
+    <tr>
+      <th>Breakeven year</th>
+      <td>{{ result.breakeven_year }}</td>
+    </tr>
   </table>
 </section>
 
 <section class="panel">
   <h2>Affordability check</h2>
-  {# picks green or red class based on affordability #}
-  <p class="{{ 'good' if result.affordability.affordable else 'bad' }}">{{ result.affordability.message }}</p>
-  <p>Estimated maximum purchase price: {{ result.affordability.max_purchase_price | money }}</p>
+  {# 28% and 35% are APRA serviceability band thresholds — hardcoded, not user inputs #}
+  {% set monthly_income = inputs.annual_income / 12 %} {% set repayment_pct =
+  (result.summary.monthly_payment / monthly_income) * 100 %} {% if repayment_pct
+  < 28 %} {% set band = "comfortable" %} {% elif repayment_pct < 35 %} {% set
+  band = "stretched" %} {% else %} {% set band = "stressed" %} {% endif %}
+  <div class="affordability-bands">
+    <div
+      class="aff-band aff-good {{ 'aff-active' if band == 'comfortable' else 'aff-dim' }}"
+    >
+      <span class="aff-label">Comfortable</span>
+      <span class="aff-range">&lt; 28% of income</span>
+    </div>
+    <div
+      class="aff-band aff-warn {{ 'aff-active' if band == 'stretched' else 'aff-dim' }}"
+    >
+      <span class="aff-label">Stretched</span>
+      <span class="aff-range">28–35% of income</span>
+    </div>
+    <div
+      class="aff-band aff-bad {{ 'aff-active' if band == 'stressed' else 'aff-dim' }}"
+    >
+      <span class="aff-label">Stressed</span>
+      <span class="aff-range">&gt; 35% of income</span>
+    </div>
+  </div>
+  <p>
+    Repayments are <strong>{{ "%.1f"|format(repayment_pct) }}%</strong> of
+    monthly income - {% if band == "comfortable" %}comfortably within the safe
+    zone. {% elif band == "stretched" %}manageable but tight. {% else %}above
+    the stress threshold. Bigger deposit or lower price would help. {% endif %}
+  </p>
+  <p>
+    Estimated maximum purchase price: {{ result.affordability.max_purchase_price
+    | money }}
+  </p>
 </section>
 
 <section class="panel">
@@ -67,7 +142,14 @@
     </thead>
     <tbody>
       {% for row in result.buy_projection %}
-      <tr><td>{{ row.year }}</td><td>{{ row.property_value | money }}</td><td>{{ row.mortgage_balance | money }}</td><td>{{ row.buy_wealth | money }}</td><td>{{ row.monthly_payment | money }}</td><td>{{ row.net_cashflow | money }}</td></tr>
+      <tr>
+        <td>{{ row.year }}</td>
+        <td>{{ row.property_value | money }}</td>
+        <td>{{ row.mortgage_balance | money }}</td>
+        <td>{{ row.buy_wealth | money }}</td>
+        <td>{{ row.monthly_payment | money }}</td>
+        <td>{{ row.net_cashflow | money }}</td>
+      </tr>
       {% endfor %}
     </tbody>
   </table>
@@ -87,7 +169,13 @@
     </thead>
     <tbody>
       {% for row in result.rent_projection %}
-      <tr><td>{{ row.year }}</td><td>{{ row.annual_rent | money }}</td><td>{{ row.cumulative_rent_paid | money }}</td><td>{{ row.rent_wealth | money }}</td><td>{{ row.net_cashflow | money }}</td></tr>
+      <tr>
+        <td>{{ row.year }}</td>
+        <td>{{ row.annual_rent | money }}</td>
+        <td>{{ row.cumulative_rent_paid | money }}</td>
+        <td>{{ row.rent_wealth | money }}</td>
+        <td>{{ row.net_cashflow | money }}</td>
+      </tr>
       {% endfor %}
     </tbody>
   </table>

@@ -64,6 +64,35 @@ ul li { margin-bottom: 0.3rem; }
 .good { color: var(--good); }
 .bad  { color: var(--bad); }
 
+.affordability-bands {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.aff-band {
+  flex: 1;
+  padding: 0.75rem;
+  border-radius: 6px;
+  border: 2px solid transparent;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.aff-label { font-weight: 600; font-size: 0.9rem; }
+.aff-range { font-size: 0.8rem; color: var(--text-secondary); }
+
+.aff-good { border-color: var(--good); }
+.aff-warn { border-color: #E8A838; }
+.aff-bad  { border-color: var(--bad); }
+
+.aff-dim { opacity: 0.3; }
+
+.aff-active.aff-good { background: rgba(63,185,80,0.12); }
+.aff-active.aff-warn { background: rgba(232,168,56,0.12); }
+.aff-active.aff-bad  { background: rgba(248,81,73,0.12); }
+
 .back-link { display: inline-block; margin-bottom: 1.25rem; font-size: 0.9rem; }
 
 .verdict-buying   { color: var(--buy-color); }

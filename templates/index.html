@@ -1,93 +1,83 @@
-{% extends "base.html" %}
-{% block title %}Dominus | Sydney Rent vs Buy{% endblock %}
-{% block content %}
-      <h1>Dominus</h1>
-      <p>Compare renting and buying over your chosen horizon.</p>
+{% extends "base.html" %} {% block title %}Dominus | Sydney Rent vs Buy{%
+endblock %} {% block content %}
+<h1>Dominus</h1>
+<p>Compare renting and buying over your chosen horizon.</p>
 
-      <!-- error banner -> shown only when validation fails -->
-      {% if error %}<div class="error">{{ error }}</div>{% endif %}
+<!-- error banner -> shown only when validation fails -->
+{% if error %}
+<div class="error">{{ error }}</div>
+{% endif %}
 
-      <form action="{{ url_for('compare') }}" method="post" class="panel">
-        <label>
-          Suburb
-          <select name="suburb" required>
-            <option value="">-- choose --</option>
-            {% for s in suburbs %}<option value="{{ s }}">{{ s }}</option>{% endfor %}
-          </select>
-        </label>
+<form action="{{ url_for('compare') }}" method="post" class="panel">
+  <label>
+    Suburb
+    <select name="suburb" required>
+      <option value="">-- choose --</option>
+      {% for s in suburbs %}
+      <option value="{{ s }}">{{ s }}</option>
+      {% endfor %}
+    </select>
+  </label>
 
-        <label>
-          Property type
-          <select name="property_type" required>
-            <option value="house">House</option>
-            <option value="unit">Unit</option>
-          </select>
-        </label>
+  <label>
+    Property type
+    <select name="property_type" required>
+      <option value="house">House</option>
+      <option value="unit">Unit</option>
+    </select>
+  </label>
 
-        <label>
-          Annual income ($)
-          <input
-            type="number"
-            name="annual_income"
-            min="1"
-            step="any"
-            value=""
-            required
-          />
-        </label>
+  <label>
+    Annual income ($)
+    <input
+      type="number"
+      name="annual_income"
+      min="1"
+      step="any"
+      value=""
+      required
+    />
+  </label>
 
-        <label>
-          Deposit / savings ($)
-          <input
-            type="number"
-            name="deposit"
-            min="1"
-            step="any"
-            value=""
-            required
-          />
-        </label>
+  <label>
+    Deposit / savings ($)
+    <input type="number" name="deposit" min="1" step="any" value="" required />
+  </label>
 
-        <label>
-          Horizon (years)
-          <input type="number" name="horizon" min="1" value="5" required />
-        </label>
+  <label>
+    Horizon (years)
+    <input type="number" name="horizon" min="1" value="5" required />
+  </label>
 
-        <label>
-          Mortgage rate (%)
-          <input
-            type="number"
-            name="mortgage_rate"
-            min="0.1"
-            step="any"
-            value="6"
-            required
-          />
-        </label>
+  <label>
+    Mortgage rate (%)
+    <input
+      type="number"
+      name="mortgage_rate"
+      min="0.1"
+      step="any"
+      value="6"
+      required
+    />
+  </label>
 
-        <label>
-          Loan term (years)
-          <input
-            type="number"
-            name="loan_term_years"
-            min="1"
-            value="30"
-            required
-          />
-        </label>
+  <label>
+    Loan term (years)
+    <input type="number" name="loan_term_years" min="1" value="30" required />
+  </label>
 
-        <label>
-          Investment return rate (%)
-          <input
-            type="number"
-            name="return_rate"
-            min="0"
-            step="any"
-            value="7"
-            required
-          />
-        </label>
+  <label>
+    Investment return rate (%)
+    <input
+      type="number"
+      name="return_rate"
+      min="0"
+      step="any"
+      value="7"
+      required
+    />
+  </label>
 
-        <button type="submit">Compare options</button>
-      </form>
+  <button type="submit">Compare options</button>
+</form>
 {% endblock %}

@@ -1,21 +1,33 @@
 <!-- This is the page that is used to inform what the metrics like stamp duty actually mean, probably more like a landing page tbh-->
 
-{% extends "base.html" %}
-{% block title %}Learn | Dominus{% endblock %}
-{% block content %}
-        <h1> How Dominus works </h1>
-        <p> Dominus compares the financial outcome of renting vs buying a Sydney property over your chosen time horizon </p>
+{% extends "base.html" %} {% block title %}Learn | Dominus{% endblock %} {%
+block content %}
+<h1>How Dominus works</h1>
+<p>
+  Dominus compares the financial outcome of renting vs buying a Sydney property
+  over your chosen time horizon
+</p>
 
-        <section class = "panel">
-            <h2> A question to consider </h2>
-            <p>Which leaves you wealthier at the end of your horizon: owning a property or renting and investing your deposit instead?</p><p><strong>Buy wealth</strong> = equity in your property minus all cash spent (deposit, stamp duty, LMI, mortgage payments, annual ownership costs).</p>
-            <p><strong>Rent wealth</strong> = the invested value of your deposit minus all rent paid over the horizon.</p>
-        </section>
+<section class="panel">
+  <h2>A question to consider</h2>
+  <p>
+    Which leaves you wealthier at the end of your horizon: owning a property or
+    renting and investing your deposit instead?
+  </p>
+  <p>
+    <strong>Buy wealth</strong> = equity in your property minus all cash spent
+    (deposit, stamp duty, LMI, mortgage payments, annual ownership costs).
+  </p>
+  <p>
+    <strong>Rent wealth</strong> = the invested value of your deposit minus all
+    rent paid over the horizon.
+  </p>
+</section>
 
-        <section class = "panel">
-          <h2> assumptions </h2>
-          <p><strong>Stamp duty</strong> is a one off nsw transfer tax paid upfront </p>
-          <p><strong>LMI</strong> is charged when deposit is under 20% </p>
-        </section>
+<section class="panel">
+  <h2>assumptions</h2>
+  <p><strong>Stamp duty</strong> is a one off nsw transfer tax paid upfront</p>
+  <p><strong>LMI</strong> is charged when deposit is under 20%</p>
+</section>
 
 {% endblock %}
