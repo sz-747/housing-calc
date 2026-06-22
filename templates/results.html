@@ -27,14 +27,24 @@ content %}
 <section class="panel">
   <h2>Wealth comparison</h2>
   <div class="chart-container">
-    <canvas id="wealth-chart"></canvas>
+    <!-- canvas is just painted pixels, so screen readers see nothing.role + aria-label give them a spoken description of the chart. -->
+    <canvas
+      id="wealth-chart"
+      role="img"
+      aria-label="Line chart comparing buying wealth against renting wealth over the comparison period."
+    ></canvas>
   </div>
 </section>
 
 <section class="panel">
   <h2>Property equity over time</h2>
   <div class="chart-container">
-    <canvas id="equity-chart"></canvas>
+    <!-- same as above: spoken description so the chart isn't silent to screen readers -->
+    <canvas
+      id="equity-chart"
+      role="img"
+      aria-label="Line chart showing property equity growing over time as the mortgage is paid down."
+    ></canvas>
   </div>
 </section>
 
@@ -90,11 +100,12 @@ content %}
 
 <section class="panel">
   <h2>Affordability check</h2>
-  {# 28% and 35% are APRA serviceability band thresholds:hardcoded, not user inputs #}
-  {% set monthly_income = inputs.annual_income / 12 %} {% set repayment_pct =
-  (result.summary.monthly_payment / monthly_income) * 100 %} {% if repayment_pct
-  < 28 %} {% set band = "comfortable" %} {% elif repayment_pct < 35 %} {% set
-  band = "stretched" %} {% else %} {% set band = "stressed" %} {% endif %}
+  {# 28% and 35% are APRA serviceability band thresholds:hardcoded, not user
+  inputs #} {% set monthly_income = inputs.annual_income / 12 %} {% set
+  repayment_pct = (result.summary.monthly_payment / monthly_income) * 100 %} {%
+  if repayment_pct < 28 %} {% set band = "comfortable" %} {% elif repayment_pct
+  < 35 %} {% set band = "stretched" %} {% else %} {% set band = "stressed" %} {%
+  endif %}
   <div class="affordability-bands">
     <div
       class="aff-band aff-good {{ 'aff-active' if band == 'comfortable' else 'aff-dim' }}"
@@ -129,54 +140,88 @@ content %}
 
 <section class="panel">
   <h2>What would flip this result?</h2>
-  {% set fp = result.flip_points %}
-  {% if fp.buying_wins %}
-    <p>Buying wins right now. Here's what would have to go wrong for renting to take over:</p>
+  {% set fp = result.flip_points %} {% if fp.buying_wins %}
+  <p>
+    Buying wins right now. Here's what would have to go wrong for renting to
+    take over:
+  </p>
   {% else %}
-    <p>Renting wins right now. Here's what would have to change for buying to win instead:</p>
+  <p>
+    Renting wins right now. Here's what would have to change for buying to win
+    instead:
+  </p>
   {% endif %}
   <ul>
-    {% if fp.flip_deposit is not none %}
-      {% if fp.buying_wins %}
-        {% set deposit_diff = inputs.deposit - fp.flip_deposit %}
-        <li><strong>Your deposit fell by {{ deposit_diff | money }}</strong>:if your savings dropped to around {{ fp.flip_deposit | money }}, renting would pull ahead.</li>
-      {% else %}
-        {% set deposit_diff = fp.flip_deposit - inputs.deposit %}
-        <li><strong>Your deposit jumped by {{ deposit_diff | money }}</strong>:you'd need around {{ fp.flip_deposit | money }} saved up before buying makes sense.</li>
-      {% endif %}
+    {% if fp.flip_deposit is not none %} {% if fp.buying_wins %} {% set
+    deposit_diff = inputs.deposit - fp.flip_deposit %}
+    <li>
+      <strong>Your deposit fell by {{ deposit_diff | money }}</strong>:if your
+      savings dropped to around {{ fp.flip_deposit | money }}, renting would
+      pull ahead.
+    </li>
+    {% else %} {% set deposit_diff = fp.flip_deposit - inputs.deposit %}
+    <li>
+      <strong>Your deposit jumped by {{ deposit_diff | money }}</strong>:you'd
+      need around {{ fp.flip_deposit | money }} saved up before buying makes
+      sense.
+    </li>
+    {% endif %} {% else %} {% if fp.buying_wins %}
+    <li>
+      <strong>Deposit:</strong> even a very small deposit doesn't flip the
+      result:buying holds up regardless.
+    </li>
     {% else %}
-      {% if fp.buying_wins %}
-        <li><strong>Deposit:</strong> even a very small deposit doesn't flip the result:buying holds up regardless.</li>
-      {% else %}
-        <li><strong>Deposit:</strong> no realistic deposit amount flips this:the mortgage costs outweigh the benefits in this suburb.</li>
-      {% endif %}
-    {% endif %}
-    {% if fp.flip_rate is not none %}
-      {% if fp.buying_wins %}
-        <li><strong>Rates rose to {{ "%.2f"|format(fp.flip_rate * 100) }}%</strong>:your repayments would become too expensive and renting would win.</li>
-      {% else %}
-        <li><strong>Rates dropped to {{ "%.2f"|format(fp.flip_rate * 100) }}%</strong>:mortgages would need to get very cheap before buying pays off here.</li>
-      {% endif %}
+    <li>
+      <strong>Deposit:</strong> no realistic deposit amount flips this:the
+      mortgage costs outweigh the benefits in this suburb.
+    </li>
+    {% endif %} {% endif %} {% if fp.flip_rate is not none %} {% if
+    fp.buying_wins %}
+    <li>
+      <strong>Rates rose to {{ "%.2f"|format(fp.flip_rate * 100) }}%</strong
+      >:your repayments would become too expensive and renting would win.
+    </li>
     {% else %}
-      {% if fp.buying_wins %}
-        <li><strong>Interest rates:</strong> even extremely high rates don't flip this:buying is very solid.</li>
-      {% else %}
-        <li><strong>Interest rates:</strong> no realistic rate makes buying worthwhile here.</li>
-      {% endif %}
-    {% endif %}
-    {% if fp.flip_growth is not none %}
-      {% if fp.buying_wins %}
-        <li><strong>Property grew slower than {{ "%.1f"|format(fp.flip_growth * 100) }}% a year</strong>:if this suburb stalls, renting and investing your deposit would beat it.</li>
-      {% else %}
-        <li><strong>Property grew faster than {{ "%.1f"|format(fp.flip_growth * 100) }}% a year</strong>:this suburb would need strong capital growth to make buying worthwhile.</li>
-      {% endif %}
+    <li>
+      <strong>Rates dropped to {{ "%.2f"|format(fp.flip_rate * 100) }}%</strong
+      >:mortgages would need to get very cheap before buying pays off here.
+    </li>
+    {% endif %} {% else %} {% if fp.buying_wins %}
+    <li>
+      <strong>Interest rates:</strong> even extremely high rates don't flip
+      this:buying is very solid.
+    </li>
     {% else %}
-      {% if fp.buying_wins %}
-        <li><strong>Property growth:</strong> even if prices flatlined, buying still wins:the result is very solid.</li>
-      {% else %}
-        <li><strong>Property growth:</strong> no realistic growth rate makes buying worthwhile here.</li>
-      {% endif %}
-    {% endif %}
+    <li>
+      <strong>Interest rates:</strong> no realistic rate makes buying worthwhile
+      here.
+    </li>
+    {% endif %} {% endif %} {% if fp.flip_growth is not none %} {% if
+    fp.buying_wins %}
+    <li>
+      <strong
+        >Property grew slower than {{ "%.1f"|format(fp.flip_growth * 100) }}% a
+        year</strong
+      >:if this suburb stalls, renting and investing your deposit would beat it.
+    </li>
+    {% else %}
+    <li>
+      <strong
+        >Property grew faster than {{ "%.1f"|format(fp.flip_growth * 100) }}% a
+        year</strong
+      >:this suburb would need strong capital growth to make buying worthwhile.
+    </li>
+    {% endif %} {% else %} {% if fp.buying_wins %}
+    <li>
+      <strong>Property growth:</strong> even if prices flatlined, buying still
+      wins:the result is very solid.
+    </li>
+    {% else %}
+    <li>
+      <strong>Property growth:</strong> no realistic growth rate makes buying
+      worthwhile here.
+    </li>
+    {% endif %} {% endif %}
   </ul>
 </section>
 
