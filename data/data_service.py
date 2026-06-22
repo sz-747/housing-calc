@@ -20,6 +20,10 @@ class SuburbDataService:
     def list_suburbs(self):
         #this returns a sorted list of all suburb names
         return sorted(self._load().keys())
+
+    def get_all(self):
+        # this returns the whole suburb dict keyed by name, for the recommender
+        return self._load()
     
     def _load(self):
         # this loads csv on first call and returns cached data
