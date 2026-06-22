@@ -1,4 +1,11 @@
-# Rent-vs-buy breakeven - net-wealth crossover.
+"""Rent-vs-buy breakeven - net-wealth crossover.
+
+Each year this compares two net-wealth figures. Buy wealth is the equity built
+in the property minus all the cash spent owning it (deposit, stamp duty, LMI,
+mortgage payments, ownership costs). Rent wealth is the invested deposit minus
+all the rent paid. The breakeven year is the first year buy wealth catches up
+to rent wealth.
+"""
 
 ANNUAL_OWNERSHIP_COST_RATE = 0.01
 
@@ -15,6 +22,24 @@ def find_breakeven(
     rent_by_year: list,
     invested_balances: list,
 ):
+    """Find the breakeven year and build the year-by-year wealth breakdown.
+
+    All the yearly lists must be the same length and aligned year-for-year
+    (element k is year k + 1).
+
+    Args:
+        property_values: Property value at the end of each year.
+        mortgage_balances: Loan still owing at the end of each year.
+        monthly_payment: Fixed monthly mortgage repayment in AUD.
+        deposit: Deposit paid up front in AUD.
+        stamp_duty: Stamp duty paid up front in AUD.
+        lmi: LMI premium paid up front in AUD.
+        rent_by_year: Total rent paid in each year.
+        invested_balances: Invested-deposit balance at the end of each year.
+
+    Raises:
+        ValueError: if the lists are empty or not all the same length.
+    """
     number_of_years = len(property_values)
     if number_of_years == 0:
         raise ValueError("yearly lists must not be empty")
