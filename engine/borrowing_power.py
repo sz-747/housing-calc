@@ -1,7 +1,27 @@
+"""Borrowing power - simple income-multiple affordability check.
+
+A rough guide to how much a buyer can spend: lenders cap the loan at a multiple
+of yearly income, then the most that can be paid is that loan plus the deposit.
+"""
+
 INCOME_MULTIPLIER = 6
 
 
 def assess_borrowing_power(annual_income: float, deposit: float, price: float) -> dict:
+    """Estimate whether a buyer can afford a property and by how much they miss.
+
+    Args:
+        annual_income: Gross yearly income in AUD. Must be > 0.
+        deposit: Deposit in AUD. Must be >= 0.
+        price: Property price in AUD. Must be > 0.
+
+    Returns:
+        A dictionary. 
+
+    Raises:
+        ValueError: if annual_income or pric is not positive, or if
+            deposit is negative.
+    """
     if annual_income <= 0:
         raise ValueError("annual_income must be positive")
     if deposit < 0:
