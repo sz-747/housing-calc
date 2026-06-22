@@ -12,6 +12,7 @@ class UserInput:
         return_rate,
         loan_term_years,
     ):
+        # Store each validated input field on the instance.
         self.suburb = suburb
         self.annual_income = annual_income
         self.deposit = deposit
@@ -140,6 +141,7 @@ class ComparisonResult:
     # this wraps the dict returned by CalcEngine.run for use in templates
 
     def __init__(self, data):
+        # Unpack the engine result dict into attributes.
         self.verdict = data["verdict"]
         self.summary = data["summary"]
         self.buy_projection = data["buy_projection"]
@@ -173,7 +175,7 @@ class ComparisonResult:
         return f"{first} {second}"
 
     def to_dict(self):
-        #this returns the result as a plain dict for scenario stage save
+        """Return the result as a plain dict for saving a scenario."""
         return {
         "verdict": self.verdict,
         "summary": self.summary,
