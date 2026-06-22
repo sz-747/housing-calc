@@ -28,6 +28,8 @@ select {
 
 input:focus, select:focus {
   outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(232, 115, 74, 0.35);
 }
 
 /* hide the up/down spinner arrows on number inputs (Chrome/Safari, then Firefox) */
