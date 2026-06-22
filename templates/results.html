@@ -90,7 +90,7 @@ content %}
 
 <section class="panel">
   <h2>Affordability check</h2>
-  {# 28% and 35% are APRA serviceability band thresholds — hardcoded, not user inputs #}
+  {# 28% and 35% are APRA serviceability band thresholds:hardcoded, not user inputs #}
   {% set monthly_income = inputs.annual_income / 12 %} {% set repayment_pct =
   (result.summary.monthly_payment / monthly_income) * 100 %} {% if repayment_pct
   < 28 %} {% set band = "comfortable" %} {% elif repayment_pct < 35 %} {% set
@@ -125,6 +125,59 @@ content %}
     Estimated maximum purchase price: {{ result.affordability.max_purchase_price
     | money }}
   </p>
+</section>
+
+<section class="panel">
+  <h2>What would flip this result?</h2>
+  {% set fp = result.flip_points %}
+  {% if fp.buying_wins %}
+    <p>Buying wins right now. Here's what would have to go wrong for renting to take over:</p>
+  {% else %}
+    <p>Renting wins right now. Here's what would have to change for buying to win instead:</p>
+  {% endif %}
+  <ul>
+    {% if fp.flip_deposit is not none %}
+      {% if fp.buying_wins %}
+        {% set deposit_diff = inputs.deposit - fp.flip_deposit %}
+        <li><strong>Your deposit fell by {{ deposit_diff | money }}</strong>:if your savings dropped to around {{ fp.flip_deposit | money }}, renting would pull ahead.</li>
+      {% else %}
+        {% set deposit_diff = fp.flip_deposit - inputs.deposit %}
+        <li><strong>Your deposit jumped by {{ deposit_diff | money }}</strong>:you'd need around {{ fp.flip_deposit | money }} saved up before buying makes sense.</li>
+      {% endif %}
+    {% else %}
+      {% if fp.buying_wins %}
+        <li><strong>Deposit:</strong> even a very small deposit doesn't flip the result:buying holds up regardless.</li>
+      {% else %}
+        <li><strong>Deposit:</strong> no realistic deposit amount flips this:the mortgage costs outweigh the benefits in this suburb.</li>
+      {% endif %}
+    {% endif %}
+    {% if fp.flip_rate is not none %}
+      {% if fp.buying_wins %}
+        <li><strong>Rates rose to {{ "%.2f"|format(fp.flip_rate * 100) }}%</strong>:your repayments would become too expensive and renting would win.</li>
+      {% else %}
+        <li><strong>Rates dropped to {{ "%.2f"|format(fp.flip_rate * 100) }}%</strong>:mortgages would need to get very cheap before buying pays off here.</li>
+      {% endif %}
+    {% else %}
+      {% if fp.buying_wins %}
+        <li><strong>Interest rates:</strong> even extremely high rates don't flip this:buying is very solid.</li>
+      {% else %}
+        <li><strong>Interest rates:</strong> no realistic rate makes buying worthwhile here.</li>
+      {% endif %}
+    {% endif %}
+    {% if fp.flip_growth is not none %}
+      {% if fp.buying_wins %}
+        <li><strong>Property grew slower than {{ "%.1f"|format(fp.flip_growth * 100) }}% a year</strong>:if this suburb stalls, renting and investing your deposit would beat it.</li>
+      {% else %}
+        <li><strong>Property grew faster than {{ "%.1f"|format(fp.flip_growth * 100) }}% a year</strong>:this suburb would need strong capital growth to make buying worthwhile.</li>
+      {% endif %}
+    {% else %}
+      {% if fp.buying_wins %}
+        <li><strong>Property growth:</strong> even if prices flatlined, buying still wins:the result is very solid.</li>
+      {% else %}
+        <li><strong>Property growth:</strong> no realistic growth rate makes buying worthwhile here.</li>
+      {% endif %}
+    {% endif %}
+  </ul>
 </section>
 
 <section class="panel">
@@ -247,7 +300,7 @@ content %}
       c.fillStyle = "rgba(124,168,232,0.85)";
       c.font = "600 11px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
       c.textAlign = "center";
-      c.fillText("Break even — Yr " + breakevenYear, x, yAxis.top + 14);
+      c.fillText("Break even:Yr " + breakevenYear, x, yAxis.top + 14);
       c.restore();
     }
   };
@@ -293,7 +346,7 @@ content %}
     }
   });
 
-  // equity chart — separate panel, own scale
+  // equity chart:separate panel, own scale
   const equityCanvas = document.getElementById("equity-chart");
   new Chart(equityCanvas, {
     type: "line",
@@ -330,7 +383,7 @@ content %}
           callbacks: {
             label: function(ctx) {
               if (ctx.dataset.label === "Milestone" && ctx.parsed.y !== null) {
-                return " " + milestoneLabels[ctx.dataIndex] + " — " + formatDollar(ctx.parsed.y);
+                return " " + milestoneLabels[ctx.dataIndex] + ":" + formatDollar(ctx.parsed.y);
               }
               if (ctx.parsed.y === null) { return null; }
               return " " + ctx.dataset.label + ": " + formatDollar(ctx.parsed.y);
