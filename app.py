@@ -78,7 +78,10 @@ def compare():
             error="Those numbers are too large to calculate. Try smaller values.",
         )
 
-    storage.save(user_input.suburb, user_input.to_dict(), result.to_dict())
+    try:
+        storage.save(user_input.suburb, user_input.to_dict(), result.to_dict())
+    except ValueError:
+        pass  # saving is a side effect. if the file write fails, still show the results
 
     return render_template(
         "results.html",
@@ -112,7 +115,10 @@ def load_scenario(index):
 
 @app.route("/scenarios/delete/<int:index>", methods=["POST"])
 def delete_scenario(index):
-    storage.delete(index)
+    try:
+        storage.delete(index)
+    except ValueError:
+        pass  # if the delete write fails, just return to the list
     return redirect(url_for("scenarios"))
 
 @app.route("/learn")

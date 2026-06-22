@@ -175,7 +175,7 @@ class ComparisonResult:
         return f"{first} {second}"
 
     def to_dict(self):
-        """Return the result as a plain dict for saving a scenario."""
+        #this returns the result as a plain dict for scenario stage save
         return {
         "verdict": self.verdict,
         "summary": self.summary,
