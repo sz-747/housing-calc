@@ -147,6 +147,22 @@ class CalculationEngine:
             deposit = deposit,
             price = property_price,
         )
+        flip_points = self._find_flip_points(
+            current_verdict = verdict,
+            property_price = property_price,
+            deposit = deposit,
+            loan_amount = loan_amount,
+            mortgage_rate = mortgage_rate,
+            loan_term_years = loan_term_years,
+            years = years,
+            return_rate = return_rate,
+            property_growth = property_growth,
+            rent_by_year = rent_by_year,
+            property_values = property_values,
+            stamp_duty = stamp_duty,
+            lmi = lmi,
+            invested_balances = invested_balances,
+        )
 
         return {
             "buy_projection": buy_projection,
@@ -156,6 +172,120 @@ class CalculationEngine:
             "verdict": verdict,
             "summary": summary,
             "affordability": affordability,
+            "flip_points": flip_points,
+        }
+
+    def _find_flip_points(
+        self,
+        current_verdict,
+        property_price,
+        deposit,
+        loan_amount,
+        mortgage_rate,
+        loan_term_years,
+        years,
+        return_rate,
+        property_growth,
+        rent_by_year,
+        property_values,
+        stamp_duty,
+        lmi,
+        invested_balances,
+    ):
+        # buying_wins = True means we look for what makes renting win instead
+        buying_wins = current_verdict in ("buying", "marginal")
+
+        flip_deposit = None
+        flip_rate = None
+        flip_growth = None
+
+        # --- deposit: step down $10k if buying wins, up $10k if renting wins ---
+        deposit_step = -10000 if buying_wins else 10000
+        test_deposit = deposit + deposit_step
+        max_deposit = property_price * 0.95
+        while 0 < test_deposit <= max_deposit:
+            test_loan = property_price - test_deposit
+            test_lmi = calculate_lmi(property_price, test_deposit)
+            test_monthly = calculate_monthly_payment(test_loan, mortgage_rate, loan_term_years)
+            test_balances = calculate_mortgage_balance(test_loan, mortgage_rate, loan_term_years, years)
+            test_invested = calculate_opportunity_cost(test_deposit, years, return_rate)
+            _, test_breakdown = find_breakeven(
+                property_values = property_values,
+                mortgage_balances = test_balances,
+                monthly_payment = test_monthly,
+                deposit = test_deposit,
+                stamp_duty = stamp_duty,
+                lmi = test_lmi,
+                rent_by_year = rent_by_year,
+                invested_balances = test_invested,
+            )
+            test_verdict = self._decide_verdict(test_breakdown)
+            if buying_wins and test_verdict != "buying":
+                flip_deposit = test_deposit
+                break
+            if not buying_wins and test_verdict == "buying":
+                flip_deposit = test_deposit
+                break
+            test_deposit = test_deposit + deposit_step
+
+        # precompute balances for rate and growth loops (deposit unchanged)
+        base_monthly = calculate_monthly_payment(loan_amount, mortgage_rate, loan_term_years)
+        base_balances = calculate_mortgage_balance(loan_amount, mortgage_rate, loan_term_years, years)
+
+        # --- mortgage rate: step up 0.25% if buying wins, down 0.25% if renting wins ---
+        rate_step = 0.0025 if buying_wins else -0.0025
+        test_rate = mortgage_rate + rate_step
+        while 0.001 <= test_rate <= 0.20:
+            test_monthly = calculate_monthly_payment(loan_amount, test_rate, loan_term_years)
+            test_balances = calculate_mortgage_balance(loan_amount, test_rate, loan_term_years, years)
+            _, test_breakdown = find_breakeven(
+                property_values = property_values,
+                mortgage_balances = test_balances,
+                monthly_payment = test_monthly,
+                deposit = deposit,
+                stamp_duty = stamp_duty,
+                lmi = lmi,
+                rent_by_year = rent_by_year,
+                invested_balances = invested_balances,
+            )
+            test_verdict = self._decide_verdict(test_breakdown)
+            if buying_wins and test_verdict != "buying":
+                flip_rate = test_rate
+                break
+            if not buying_wins and test_verdict == "buying":
+                flip_rate = test_rate
+                break
+            test_rate = test_rate + rate_step
+
+        # --- property growth: step down 0.5% if buying wins, up 0.5% if renting wins ---
+        growth_step = -0.005 if buying_wins else 0.005
+        test_growth = property_growth + growth_step
+        while -0.05 <= test_growth <= 0.20:
+            test_property_values = calculate_property_value(property_price, years, test_growth)
+            _, test_breakdown = find_breakeven(
+                property_values = test_property_values,
+                mortgage_balances = base_balances,
+                monthly_payment = base_monthly,
+                deposit = deposit,
+                stamp_duty = stamp_duty,
+                lmi = lmi,
+                rent_by_year = rent_by_year,
+                invested_balances = invested_balances,
+            )
+            test_verdict = self._decide_verdict(test_breakdown)
+            if buying_wins and test_verdict != "buying":
+                flip_growth = test_growth
+                break
+            if not buying_wins and test_verdict == "buying":
+                flip_growth = test_growth
+                break
+            test_growth = test_growth + growth_step
+
+        return {
+            "buying_wins": buying_wins,
+            "flip_deposit": round(flip_deposit, 2) if flip_deposit is not None else None,
+            "flip_rate": round(flip_rate, 4) if flip_rate is not None else None,
+            "flip_growth": round(flip_growth, 4) if flip_growth is not None else None,
         }
 
     def _derive_loan_amount(

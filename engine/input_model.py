@@ -111,6 +111,7 @@ class ComparisonResult:
         self.yearly_breakdown = data["yearly_breakdown"]
         self.breakeven_year = data["breakeven_year"]
         self.affordability = data["affordability"]
+        self.flip_points = data.get("flip_points", {"buying_wins": True, "flip_deposit": None, "flip_rate": None, "flip_growth": None})
 
     def explanation(self):
         upfront = self.summary["stamp_duty"] + self.summary["lmi"]
@@ -144,4 +145,5 @@ class ComparisonResult:
         "yearly_breakdown": self.yearly_breakdown,
         "breakeven_year": self.breakeven_year,
         "affordability": self.affordability,
+        "flip_points": self.flip_points,
     }

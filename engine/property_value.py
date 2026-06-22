@@ -7,8 +7,6 @@ def calculate_property_value(price: float, years: int, annual_growth: float) -> 
         raise ValueError("price must be positive")
     if years <= 0:
         raise ValueError("years must be positive")
-    if annual_growth < 0:
-        raise ValueError("annual_growth must be non-negative")
 
     yearly_value = []
     current_value = price
