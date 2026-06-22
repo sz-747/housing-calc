@@ -10,6 +10,22 @@ Formula: M = P * r * (1 + r)^n / ((1 + r)^n - 1)
 
 
 def calculate_monthly_payment(principal: float, annual_rate: float, years: int) -> float:
+    """Return the fixed monthly repayment on a principal and interest loan.
+
+    Uses amortisation formula above to find the level repayment that pays the loan off exactly over its term.
+
+    Args:
+        principal: Amount borrowed in AUD. Must be > 0.
+        annual_rate: Annual interest rate as a fraction (0.0609 = 6.09%).
+            Tis must be > 0.
+        years: Loan term in years. Must be > 0.
+
+    Returns:
+        The monthly repayment in AUD, rounded to the nearest cent.
+
+    Raises:
+        ValueError: if any argument is not positive.
+    """
     if principal <= 0:
         raise ValueError("principal must be positive")
     if annual_rate <= 0:
