@@ -12,6 +12,9 @@ class ScenarioStorage:
     def save(self, suburb, inputs, result):
         #append one scenario to stoage file
         scenarios = self.load_all()
+        for existing in scenarios:
+            if existing["suburb"] == suburb and existing["inputs"] == inputs:
+                return  # exact same scenario already saved, dont duplicate it
         scenarios.append({
             "suburb": suburb,
             "inputs": inputs,
