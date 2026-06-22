@@ -61,6 +61,31 @@ class UserInput:
             loan_term_years=loan_term_years,
         )
     
+    @classmethod #parse just the money fields for the recommender, no suburb needed
+    def financials_from_form(cls, form):
+        """Parse the financial fields into the inputs dict engine.run expects (no suburb)."""
+        annual_income = UserInput._parse_positive_float(form, "annual_income", "Annual income")
+        deposit = UserInput._parse_positive_float(form, "deposit", "Deposit")
+
+        property_type = form.get("property_type", "").strip().lower()
+        if property_type not in {"house", "unit"}:
+            raise ValueError("Property type must be house or unit")
+
+        horizon = UserInput._parse_positive_int(form, "horizon", "Time horizon")
+        mortgage_rate = UserInput._parse_positive_float(form, "mortgage_rate", "Mortgage rate") / 100.0
+        return_rate = UserInput._parse_nonneg_float(form, "return_rate", "Investment return rate") / 100.0
+        loan_term_years = UserInput._parse_positive_int(form, "loan_term_years", "Loan term")
+
+        return {
+            "annual_income": annual_income,
+            "deposit": deposit,
+            "property_type": property_type,
+            "horizon": horizon,
+            "mortgage_rate": mortgage_rate,
+            "return_rate": return_rate,
+            "loan_term_years": loan_term_years,
+        }
+
     def to_dict(self): #this is for calc engine.run - return inputs as plain dict
         return {
             "annual_income": self.annual_income,

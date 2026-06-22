@@ -26,6 +26,22 @@ class InputValidator:
         
         return len(self._errors) == 0
     
+    def validate_without_suburb(self, form_data):
+        # the recommender has no suburb field, so check the financials only
+        self._errors = []
+        property_type = form_data.get("property_type", "").strip().lower()
+        if property_type not in {"house", "unit"}:
+            self._errors.append("type of property needs to be house or unit")
+
+        self._check_positive_number(form_data, "annual_income", "Annual income")
+        self._check_positive_number(form_data, "deposit", "Deposit")
+        self._check_positive_integer(form_data, "horizon", "Time horizon")
+        self._check_positive_number(form_data, "mortgage_rate", "Mortgage rate")
+        self._check_positive_integer(form_data, "loan_term_years", "Loan term")
+        self._check_nonneg_number(form_data, "return_rate", "Investment return rate")
+
+        return len(self._errors) == 0
+
     def get_errors(self):
         """Return a copy of the error messages from the last validate call."""
         return list(self._errors)
