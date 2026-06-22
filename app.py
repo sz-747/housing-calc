@@ -76,6 +76,14 @@ def delete_scenario(index):
     storage.delete(index)
     return redirect(url_for("scenarios"))
 
+@app.route("/recommend", methods=["GET"])
+def recommend():
+    return render_template(
+        "recommend.html",
+        form_data={},
+        error=None,
+    )
+
 @app.route("/learn")
 def learn():
     return render_template("learn.html")
