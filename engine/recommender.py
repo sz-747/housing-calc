@@ -29,8 +29,8 @@ def rank_suburbs(engine, financial_inputs, all_suburbs):
         suburb_data = all_suburbs[suburb_name]
         try:
             result = engine.run(financial_inputs, suburb_data)
-        except ValueError:
-            # a cheap suburb where the deposit is bigger than the price cannot be evaluated - skip it and keep going rather than crash
+        except (ValueError, OverflowError):
+            # a suburb that cannot be evaluated (deposit bigger than the price, or numbers too large to calculate) - skip it and keep going rather than crash
             skipped += 1
             continue
 
