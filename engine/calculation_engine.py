@@ -339,7 +339,7 @@ class CalculationEngine:
         lmi,
         property_type,
     ):
-        """Build the year-by-year buy table (value, balance, wealth, cashflow)."""
+        """Build the year by year buy table (value, balance, wealth, cashflow)."""
         annual_payment = monthly_payment * 12
         cumulative_mortgage_paid = 0.0
         cumulative_ownership_cost = 0.0
@@ -367,7 +367,7 @@ class CalculationEngine:
         return rows
     
     def _build_rent_projection(self, years, rent_by_year, invested_balances):
-        """Build the year-by-year rent table (rent, cumulative, wealth)."""
+        """Build the year by year rent table (rent, cumulative, wealth)."""
         cumulative_rent_paid = 0.0
         rows = []
         for year_index in range(years):
@@ -423,7 +423,7 @@ class CalculationEngine:
         }
         
     def _decide_verdict(self, yearly_breakdown):
-        """Return 'buying', 'renting', or 'marginal' from final-year wealth."""
+        """Return buying, renting, or marginal from final year wealth."""
         final_year = yearly_breakdown[-1]
         buy = final_year["buy_wealth"]
         rent = final_year["rent_wealth"]
@@ -493,7 +493,7 @@ class CalculationEngine:
         raise ValueError(f"{label} is required")
 
     def _read_property_type(self, raw):
-        """Normalise and validate the property type to 'house' or 'unit'."""
+        """Normalise and validate the property type to house or unit."""
         normalised = str(raw).strip().lower()
         if normalised not in {"house", "unit"}:
             raise ValueError(f"property type must be 'house' or 'unit', got '{raw}'")

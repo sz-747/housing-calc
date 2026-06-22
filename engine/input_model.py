@@ -22,7 +22,18 @@ class UserInput:
         self.loan_term_years = loan_term_years
         
     @classmethod #e.g. can do UserInput.from_form(form) without first creating UserInput
-    def from_form(cls, form): 
+    def from_form(cls, form):
+        """Parse and validate a submitted form into a UserInput.
+
+        Args:
+            form: The request form mapping field names to raw string values.
+
+        Returns:
+            A UserInput holding the cleaned, typed values.
+
+        Raises:
+            ValueError: if any required field is missing or out of range.
+        """
         suburb = form.get("suburb", "").strip()
         if suburb == "":
             raise ValueError("choose a suburb")
@@ -114,6 +125,7 @@ class ComparisonResult:
         self.flip_points = data.get("flip_points", {"buying_wins": True, "flip_deposit": None, "flip_rate": None, "flip_growth": None})
 
     def explanation(self):
+        """Return sentence explaining verdict."""
         upfront = self.summary["stamp_duty"] + self.summary["lmi"]
         gap = abs(self.summary["net_difference"])
         buy_w = self.summary["buy_wealth"]

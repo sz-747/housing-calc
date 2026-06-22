@@ -27,9 +27,11 @@ class InputValidator:
         return len(self._errors) == 0
     
     def get_errors(self):
+        """Return a copy of the error messages from the last validate call."""
         return list(self._errors)
     
     def _check_positive_number(self, form_data, key, label):
+        """Record an error unless the field holds a number greater than zero."""
         raw = form_data.get(key, "").strip()
         if raw == "":
             self._errors.append(f"{label} is required")
@@ -44,6 +46,7 @@ class InputValidator:
             
             
     def _check_nonneg_number(self, form_data, key, label):
+        """Record an error unless the field holds a number of zero or more."""
         raw = form_data.get(key, "").strip()
         if raw == "":
             self._errors.append(f"{label} is required.")
@@ -57,6 +60,7 @@ class InputValidator:
             self._errors.append(f"{label} must be zero or more.")
             
     def _check_positive_integer(self, form_data, key, label):
+        """Record an error unless the field holds a whole number of at least 1."""
         raw = form_data.get(key, "").strip()
         if raw == "":
             self._errors.append(f"{label} is required.")
