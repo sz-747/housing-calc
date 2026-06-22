@@ -1,4 +1,4 @@
-from flask import Flask, redirect, render_template, request, url_for
+from flask import Flask, jsonify, redirect, render_template, request, url_for
 
 from data.data_service import SuburbDataService
 from data.scenario_storage import ScenarioStorage
@@ -75,6 +75,25 @@ def load_scenario(index):
 def delete_scenario(index):
     storage.delete(index)
     return redirect(url_for("scenarios"))
+
+@app.route("/api/scenarios")
+def api_scenarios():
+    all_scenarios = storage.load_all()
+    items = []
+    # each s is one saved scenario dict: s["suburb"], s["inputs"], s["result"]
+    # .get("key", default) used where old saves may be missing newer fields
+    for i, s in enumerate(all_scenarios):
+        items.append({
+            "index": i,
+            "suburb": s["suburb"],
+            "verdict": s["result"]["verdict"],
+            "breakeven_year": s["result"]["breakeven_year"],
+            "property_type": s["inputs"].get("property_type", ""),
+            "horizon": s["inputs"].get("horizon", ""),
+            "deposit": s["inputs"].get("deposit", 0),
+            "breakdown": s["result"]["yearly_breakdown"],
+        })
+    return jsonify(items)
 
 @app.route("/learn")
 def learn():
