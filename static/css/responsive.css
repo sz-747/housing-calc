@@ -1,0 +1,41 @@
+/* Responsive rules. Loaded last so these override the base styles on
+   smaller screens. Two breakpoints: tablet (768px) and phone (480px). */
+
+/* Tablet and below */
+@media (max-width: 768px) {
+  .container {
+    padding: 1.5rem 1.25rem;
+  }
+
+  nav {
+    padding: 0.7rem 1.25rem;
+    gap: 1rem;
+  }
+
+  /* the three affordability bands stack instead of squashing side by side */
+  .affordability-bands {
+    flex-direction: column;
+  }
+}
+
+/* Phones */
+@media (max-width: 480px) {
+  .container {
+    padding: 1.25rem 1rem;
+  }
+
+  h1 {
+    font-size: 1.5rem;
+  }
+
+  .chart-container {
+    height: 260px;
+  }
+
+  /* let wide tables scroll sideways instead of breaking the layout */
+  table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+}
