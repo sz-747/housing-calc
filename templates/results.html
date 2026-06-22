@@ -252,11 +252,10 @@ content %}
     equityData.push(row.equity);
   }
 
-  // milestone dots: year equity first crosses 20% and 50% of property value
+  // milestone dot: year equity first crosses 20% of property value
   const milestoneData = breakdown.map(function(row) { return null; });
   const milestoneLabels = breakdown.map(function(row) { return ""; });
   var hit20 = false;
-  var hit50 = false;
   for (var i = 0; i < breakdown.length; i++) {
     var row = breakdown[i];
     var pct = row.equity / row.property_value;
@@ -264,10 +263,6 @@ content %}
       milestoneData[i] = row.equity;
       milestoneLabels[i] = "20% owned";
       hit20 = true;
-    } else if (!hit50 && pct >= 0.50) {
-      milestoneData[i] = row.equity;
-      milestoneLabels[i] = "50% owned";
-      hit50 = true;
     }
   }
 
@@ -365,8 +360,10 @@ content %}
         {
           label: "Milestone",
           data: milestoneData,
-          borderColor: "transparent",
-          backgroundColor: "#C792EA",
+          backgroundColor: "#FFD479",
+          pointBackgroundColor: "#FFD479",
+          pointBorderColor: "#1B1F24",
+          pointBorderWidth: 2,
           pointRadius: 8,
           pointHoverRadius: 10,
           pointStyle: "star",
