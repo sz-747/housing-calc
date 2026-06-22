@@ -1,7 +1,10 @@
 {% extends "base.html" %} {% block title %}Dominus | Sydney Rent vs Buy{%
 endblock %} {% block content %}
 <h1>Dominus</h1>
-<p>Compare renting and buying over your chosen horizon.</p>
+<p>
+  Compare renting and buying over your chosen horizon. Pick a suburb, or leave
+  it on "Rank all suburbs for me" to see every suburb ranked.
+</p>
 
 <!-- error banner -> shown only when validation fails -->
 {% if error %}
@@ -11,8 +14,8 @@ endblock %} {% block content %}
 <form action="{{ url_for('compare') }}" method="post" class="panel">
   <label>
     Suburb
-    <select name="suburb" required>
-      <option value="">-- choose --</option>
+    <select name="suburb">
+      <option value="">Rank all suburbs for me</option>
       {% for s in suburbs %}
       <option value="{{ s }}">{{ s }}</option>
       {% endfor %}

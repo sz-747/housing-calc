@@ -26,16 +26,35 @@ def home():
 @app.route("/compare", methods=["POST"])
 def compare():
     form_data = request.form.to_dict()
-    
+    suburb = request.form.get("suburb", "").strip()
+
     validator = InputValidator()
+
+    # no suburb chosen -> rank every suburb instead of comparing just one
+    if suburb == "":
+        if not validator.validate_without_suburb(request.form):
+            return render_template(
+                "index.html",
+                suburbs=suburb_service.list_suburbs(),
+                form_data=form_data,
+                error=validator.get_errors()[0],
+            )
+        financial_inputs = UserInput.financials_from_form(request.form)
+        outcome = rank_suburbs(engine, financial_inputs, suburb_service.get_all())
+        return render_template(
+            "recommend.html",
+            ranked=outcome["ranked"],
+            skipped=outcome["skipped"],
+        )
+
     if not validator.validate(request.form, suburb_service.list_suburbs()):
         return render_template(
             "index.html",
             suburbs=suburb_service.list_suburbs(),
             form_data=form_data,
-            error=validator.errors[0],
+            error=validator.get_errors()[0],
         )
-    
+
     user_input = UserInput.from_form(request.form)
     suburb_data = suburb_service.get_suburb(user_input.suburb)
     result = ComparisonResult(engine.run(user_input.to_dict(), suburb_data))
@@ -76,37 +95,6 @@ def load_scenario(index):
 def delete_scenario(index):
     storage.delete(index)
     return redirect(url_for("scenarios"))
-
-@app.route("/recommend", methods=["GET", "POST"])
-def recommend():
-    if request.method == "GET":
-        return render_template(
-            "recommend.html",
-            error=None,
-            ranked=None,
-            skipped=0,
-        )
-
-    form_data = request.form.to_dict()
-
-    validator = InputValidator()
-    if not validator.validate_without_suburb(request.form):
-        return render_template(
-            "recommend.html",
-            error=validator.get_errors()[0],
-            ranked=None,
-            skipped=0,
-        )
-
-    financial_inputs = UserInput.financials_from_form(request.form)
-    outcome = rank_suburbs(engine, financial_inputs, suburb_service.get_all())
-
-    return render_template(
-        "recommend.html",
-        error=None,
-        ranked=outcome["ranked"],
-        skipped=outcome["skipped"],
-    )
 
 @app.route("/learn")
 def learn():
