@@ -4,6 +4,7 @@ from data.data_service import SuburbDataService
 from data.scenario_storage import ScenarioStorage
 from engine import CalculationEngine
 from engine.input_model import ComparisonResult, UserInput
+from engine.recommender import rank_suburbs
 from engine.validation import InputValidator
 
 app = Flask(__name__)
@@ -76,12 +77,35 @@ def delete_scenario(index):
     storage.delete(index)
     return redirect(url_for("scenarios"))
 
-@app.route("/recommend", methods=["GET"])
+@app.route("/recommend", methods=["GET", "POST"])
 def recommend():
+    if request.method == "GET":
+        return render_template(
+            "recommend.html",
+            error=None,
+            ranked=None,
+            skipped=0,
+        )
+
+    form_data = request.form.to_dict()
+
+    validator = InputValidator()
+    if not validator.validate_without_suburb(request.form):
+        return render_template(
+            "recommend.html",
+            error=validator.get_errors()[0],
+            ranked=None,
+            skipped=0,
+        )
+
+    financial_inputs = UserInput.financials_from_form(request.form)
+    outcome = rank_suburbs(engine, financial_inputs, suburb_service.get_all())
+
     return render_template(
         "recommend.html",
-        form_data={},
         error=None,
+        ranked=outcome["ranked"],
+        skipped=outcome["skipped"],
     )
 
 @app.route("/learn")

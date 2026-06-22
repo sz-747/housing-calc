@@ -70,4 +70,33 @@ endblock %} {% block content %}
 
   <button type="submit">Find best suburbs</button>
 </form>
+
+<!-- results table -> shown only after a successful submit -->
+{% if ranked is not none %}
+<section class="panel">
+  <p>Ranked {{ ranked|length }} suburbs ({{ skipped }} skipped).</p>
+  <table>
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Suburb</th>
+        <th>Verdict</th>
+        <th>Net difference</th>
+        <th>Breakeven year</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for row in ranked %}
+      <tr>
+        <td>{{ loop.index }}</td>
+        <td>{{ row.suburb }}</td>
+        <td class="verdict-{{ row.verdict }}">{{ row.verdict }}</td>
+        <td>{{ row.net_difference|money }}</td>
+        <td>{% if row.breakeven_year %}{{ row.breakeven_year }}{% else %}Never{% endif %}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+{% endif %}
 {% endblock %}
