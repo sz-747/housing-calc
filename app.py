@@ -57,7 +57,26 @@ def compare():
 
     user_input = UserInput.from_form(request.form)
     suburb_data = suburb_service.get_suburb(user_input.suburb)
-    result = ComparisonResult(engine.run(user_input.to_dict(), suburb_data))
+
+    # some number combos cant be worked out. show msg instead of crashing
+    # reason for cant figure out --> deposit >= price (loadn goes negative)
+    # loan term < horizon (no mortgage left to track), rate near 0, cant divide by 0 in formula.
+    try:
+        result = ComparisonResult(engine.run(user_input.to_dict(), suburb_data))
+    except ValueError as error:
+        return render_template(
+            "index.html",
+            suburbs=suburb_service.list_suburbs(),
+            form_data=form_data,
+            error=str(error),
+        )
+    except OverflowError: #this is when the math is physcaally too big to store
+        return render_template(
+            "index.html",
+            suburbs=suburb_service.list_suburbs(),
+            form_data=form_data,
+            error="Those numbers are too large to calculate. Try smaller values.",
+        )
 
     storage.save(user_input.suburb, user_input.to_dict(), result.to_dict())
 
