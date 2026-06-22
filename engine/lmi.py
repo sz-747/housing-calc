@@ -1,5 +1,11 @@
-# Lenders Mortgage Insurance - tiered LVR lookup.
+"""Lenders Mortgage Insurance - tiered LVR lookup.
 
+LMI is a one-off premium a lender charges when the deposit is small (the loan
+is a high share of the price, so the loan-to-value ratio or LVR is high). The
+premium is looked up from a tier table: the higher the LVR, the higher the
+rate charged on the loan. No LMI is owed once the deposit reaches 20% (LVR
+80% or below).
+"""
 
 
 LMI_TIERS = (
@@ -10,7 +16,19 @@ LMI_TIERS = (
 
 
 def calculate_lmi(price: float, deposit: float) -> float:
-    
+    """Return the LMI premium owed for a given price and deposit.
+
+    Args:
+        price: Purchase price in AUD. Must be > 0.
+        deposit: Deposit in AUD. Must be >= 0 and less than ``price``.
+
+    Returns:
+        The LMI premium in AUD, rounded to the nearest cent. Returns 0.0 when
+        the deposit is 20% or more (LVR <= 80%).
+
+    Raises:
+        ValueError: if price is not positive, deposit is negative, deposit is not less than price, or the LVR matches no tier.
+    """
     if price <= 0:
         raise ValueError("price must be positive")
     if deposit < 0:
