@@ -54,6 +54,7 @@ class SuburbDataService:
             return suburbs
         
     def _parse_float(self, row, key):
+        """Read one numeric CSV field as a float, or raise if missing or bad."""
         raw = row.get(key, "").strip()
         if raw == "":
             raise ValueError(f"Missing numeric field in CSV: {key}")
