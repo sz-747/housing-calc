@@ -1,3 +1,6 @@
+import math
+
+
 class InputValidator:
     # this validates raw data before parsing
     
@@ -19,10 +22,10 @@ class InputValidator:
             
         self._check_positive_number(form_data, "annual_income", "Annual income")
         self._check_positive_number(form_data, "deposit", "Deposit")
-        self._check_positive_integer(form_data, "horizon", "Time horizon")
-        self._check_positive_number(form_data, "mortgage_rate", "Mortgage rate")
-        self._check_positive_integer(form_data, "loan_term_years", "Loan term")
-        self._check_nonneg_number(form_data, "return_rate", "Investment return rate")
+        self._check_positive_integer(form_data, "horizon", "Time horizon", max_value=60)
+        self._check_positive_number(form_data, "mortgage_rate", "Mortgage rate", max_value=30)
+        self._check_positive_integer(form_data, "loan_term_years", "Loan term", max_value=40)
+        self._check_nonneg_number(form_data, "return_rate", "Investment return rate", max_value=30)
         
         return len(self._errors) == 0
     
@@ -35,10 +38,10 @@ class InputValidator:
 
         self._check_positive_number(form_data, "annual_income", "Annual income")
         self._check_positive_number(form_data, "deposit", "Deposit")
-        self._check_positive_integer(form_data, "horizon", "Time horizon")
-        self._check_positive_number(form_data, "mortgage_rate", "Mortgage rate")
-        self._check_positive_integer(form_data, "loan_term_years", "Loan term")
-        self._check_nonneg_number(form_data, "return_rate", "Investment return rate")
+        self._check_positive_integer(form_data, "horizon", "Time horizon", max_value=60)
+        self._check_positive_number(form_data, "mortgage_rate", "Mortgage rate", max_value=30)
+        self._check_positive_integer(form_data, "loan_term_years", "Loan term", max_value=40)
+        self._check_nonneg_number(form_data, "return_rate", "Investment return rate", max_value=30)
 
         return len(self._errors) == 0
 
@@ -46,7 +49,7 @@ class InputValidator:
         """Return a copy of the error messages from the last validate call."""
         return list(self._errors)
     
-    def _check_positive_number(self, form_data, key, label):
+    def _check_positive_number(self, form_data, key, label, max_value=None):
         """Record an error unless the field holds a number greater than zero."""
         raw = form_data.get(key, "").strip()
         if raw == "":
@@ -57,11 +60,18 @@ class InputValidator:
         except ValueError:
             self._errors.append(f"{label} must be a number")
             return
+        if not math.isfinite(value):
+            # rejects "inf" and "nan" which slip past the comparisons below
+            self._errors.append(f"{label} must be a number")
+            return
         if value <= 0:
             self._errors.append(f"{label} must be greater than zero")
-            
-            
-    def _check_nonneg_number(self, form_data, key, label):
+            return
+        if max_value is not None and value > max_value:
+            self._errors.append(f"{label} must be {max_value} or less")
+
+
+    def _check_nonneg_number(self, form_data, key, label, max_value=None):
         """Record an error unless the field holds a number of zero or more."""
         raw = form_data.get(key, "").strip()
         if raw == "":
@@ -72,10 +82,16 @@ class InputValidator:
         except ValueError:
             self._errors.append(f"{label} must be a number.")
             return
+        if not math.isfinite(value):
+            self._errors.append(f"{label} must be a number.")
+            return
         if value < 0:
             self._errors.append(f"{label} must be zero or more.")
-            
-    def _check_positive_integer(self, form_data, key, label):
+            return
+        if max_value is not None and value > max_value:
+            self._errors.append(f"{label} must be {max_value} or less.")
+
+    def _check_positive_integer(self, form_data, key, label, max_value=None):
         """Record an error unless the field holds a whole number of at least 1."""
         raw = form_data.get(key, "").strip()
         if raw == "":
@@ -88,3 +104,6 @@ class InputValidator:
             return
         if value < 1:
             self._errors.append(f"{label} must be at least 1.")
+            return
+        if max_value is not None and value > max_value:
+            self._errors.append(f"{label} must be {max_value} or less.")
