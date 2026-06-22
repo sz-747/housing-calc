@@ -14,7 +14,22 @@ MARGINAL_VERDICT_THRESHOLD = 0.05
 
 
 class CalculationEngine:
+    """Orchestrates the whole rent vs buy calculation.
+
+    Takes the user's inputs and one suburb's market data, runs every step in order (costs, projections, breakeven, verdict), and returns one result dict for the template to display.
+    """
+
     def run(self, user_inputs, suburb_data):
+        """Run the full comparison and return the result bundle.
+
+        Args:
+            user_inputs: Dict of the user's financial inputs.
+            suburb_data: Dict of one suburb's market data.
+
+        Returns:
+            A dict with buy_projection, rent_projection, yearly_breakdown,
+            breakeven_year, verdict, summary, affordability, and flip_points.
+        """
         self._assert_dict(user_inputs, "user_inputs")
         self._assert_dict(suburb_data, "suburb_data")
 
@@ -192,6 +207,10 @@ class CalculationEngine:
         lmi,
         invested_balances,
     ):
+        """Find how far deposit, rate, or growth must move to flip the verdict.
+
+        Returns a dict with buying_wins and the flip point for each lever (flip_deposit, flip_rate, flip_growth), or none where no realistic value flips the result.
+        """
         # buying_wins = True means we look for what makes renting win instead
         buying_wins = current_verdict in ("buying", "marginal")
 
@@ -294,6 +313,7 @@ class CalculationEngine:
         deposit,
         suburb_data,
     ):
+        """Return the loan needed (price minus deposit) after sanity checks."""
         if deposit < 0:
             raise ValueError("deposit must be non-negative")
         if property_price <= 0:
@@ -319,6 +339,7 @@ class CalculationEngine:
         lmi,
         property_type,
     ):
+        """Build the year-by-year buy table (value, balance, wealth, cashflow)."""
         annual_payment = monthly_payment * 12
         cumulative_mortgage_paid = 0.0
         cumulative_ownership_cost = 0.0
@@ -346,6 +367,7 @@ class CalculationEngine:
         return rows
     
     def _build_rent_projection(self, years, rent_by_year, invested_balances):
+        """Build the year-by-year rent table (rent, cumulative, wealth)."""
         cumulative_rent_paid = 0.0
         rows = []
         for year_index in range(years):
@@ -380,7 +402,7 @@ class CalculationEngine:
         property_type,
         loan_amount,
     ):
-        
+        """Build the headline summary numbers shown above the tables."""
         final_year = yearly_breakdown[-1]
         buy_wealth = final_year["buy_wealth"]
         rent_wealth = final_year["rent_wealth"]
@@ -401,6 +423,7 @@ class CalculationEngine:
         }
         
     def _decide_verdict(self, yearly_breakdown):
+        """Return 'buying', 'renting', or 'marginal' from final-year wealth."""
         final_year = yearly_breakdown[-1]
         buy = final_year["buy_wealth"]
         rent = final_year["rent_wealth"]
@@ -444,6 +467,7 @@ class CalculationEngine:
         return value
     
     def _read_int(self, source, keys, label, *, default=None, min_value=None):
+        """Read and validate an int from source by the first matching key."""
         value = None
         for key in keys:
             if key in source:
@@ -462,12 +486,14 @@ class CalculationEngine:
         return value
     
     def _read_any(self, source, keys, label):
+        """Return the first present key's raw value, or raise if none found."""
         for key in keys:
             if key in source:
                 return source[key]
         raise ValueError(f"{label} is required")
 
     def _read_property_type(self, raw):
+        """Normalise and validate the property type to 'house' or 'unit'."""
         normalised = str(raw).strip().lower()
         if normalised not in {"house", "unit"}:
             raise ValueError(f"property type must be 'house' or 'unit', got '{raw}'")
