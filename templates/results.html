@@ -22,6 +22,13 @@
 </section>
 
 <section class="panel">
+  <h2>Property equity over time</h2>
+  <div class="chart-container">
+    <canvas id="equity-chart"></canvas>
+  </div>
+</section>
+
+<section class="panel">
   <h2>Summary</h2>
   <table>
     <tr><th>Loan amount</th><td>{{ result.summary.loan_amount | money }}</td></tr>
@@ -94,21 +101,73 @@
   const labels = [];
   const buyData = [];
   const rentData = [];
+  const equityData = [];
 
   for (let i = 0; i < breakdown.length; i++) {
     const row = breakdown[i];
     labels.push("Year " + row.year);
     buyData.push(row.buy_wealth);
     rentData.push(row.rent_wealth);
+    equityData.push(row.equity);
+  }
+
+  // milestone dots: year equity first crosses 20% and 50% of property value
+  const milestoneData = breakdown.map(function(row) { return null; });
+  const milestoneLabels = breakdown.map(function(row) { return ""; });
+  var hit20 = false;
+  var hit50 = false;
+  for (var i = 0; i < breakdown.length; i++) {
+    var row = breakdown[i];
+    var pct = row.equity / row.property_value;
+    if (!hit20 && pct >= 0.20) {
+      milestoneData[i] = row.equity;
+      milestoneLabels[i] = "20% owned";
+      hit20 = true;
+    } else if (!hit50 && pct >= 0.50) {
+      milestoneData[i] = row.equity;
+      milestoneLabels[i] = "50% owned";
+      hit50 = true;
+    }
   }
 
   function formatDollar(value) {
     return "$" + value.toLocaleString();
   }
 
+  const breakevenYear = {{ result.breakeven_year if result.breakeven_year else "null" }};
+
+  // draws a vertical dashed line at the breakeven year
+  const breakevenPlugin = {
+    id: "breakevenLine",
+    afterDraw(chart) {
+      if (breakevenYear === null) { return; }
+      const idx = breakevenYear - 1;
+      const meta = chart.getDatasetMeta(0);
+      if (!meta.data[idx]) { return; }
+      const x = meta.data[idx].x;
+      const yAxis = chart.scales.y;
+      const c = chart.ctx;
+      c.save();
+      c.strokeStyle = "rgba(124,168,232,0.75)";
+      c.lineWidth = 1.5;
+      c.setLineDash([5, 4]);
+      c.beginPath();
+      c.moveTo(x, yAxis.top);
+      c.lineTo(x, yAxis.bottom);
+      c.stroke();
+      c.setLineDash([]);
+      c.fillStyle = "rgba(124,168,232,0.85)";
+      c.font = "600 11px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
+      c.textAlign = "center";
+      c.fillText("Break even — Yr " + breakevenYear, x, yAxis.top + 14);
+      c.restore();
+    }
+  };
+
   const canvas = document.getElementById("wealth-chart");
   new Chart(canvas, {
     type: "line",
+    plugins: [breakevenPlugin],
     data: {
       labels: labels,
       datasets: [
@@ -127,7 +186,7 @@
           backgroundColor: "rgba(91,206,166,0.1)",
           fill: true,
           tension: 0.3
-        }
+        },
       ]
     },
     options: {
@@ -135,6 +194,61 @@
       maintainAspectRatio: false,
       plugins: {
         legend: { labels: { color: "#E6EDF3" } }
+      },
+      scales: {
+        x: { ticks: { color: "#8B949E" }, grid: { color: "#30363D" } },
+        y: {
+          ticks: { color: "#8B949E", callback: formatDollar },
+          grid: { color: "#30363D" }
+        }
+      }
+    }
+  });
+
+  // equity chart — separate panel, own scale
+  const equityCanvas = document.getElementById("equity-chart");
+  new Chart(equityCanvas, {
+    type: "line",
+    data: {
+      labels: labels,
+      datasets: [
+        {
+          label: "Equity",
+          data: equityData,
+          borderColor: "#C792EA",
+          backgroundColor: "rgba(199,146,234,0.08)",
+          fill: true,
+          tension: 0.3,
+          pointRadius: 2
+        },
+        {
+          label: "Milestone",
+          data: milestoneData,
+          borderColor: "transparent",
+          backgroundColor: "#C792EA",
+          pointRadius: 8,
+          pointHoverRadius: 10,
+          pointStyle: "star",
+          showLine: false
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { labels: { color: "#E6EDF3" } },
+        tooltip: {
+          callbacks: {
+            label: function(ctx) {
+              if (ctx.dataset.label === "Milestone" && ctx.parsed.y !== null) {
+                return " " + milestoneLabels[ctx.dataIndex] + " — " + formatDollar(ctx.parsed.y);
+              }
+              if (ctx.parsed.y === null) { return null; }
+              return " " + ctx.dataset.label + ": " + formatDollar(ctx.parsed.y);
+            }
+          }
+        }
       },
       scales: {
         x: { ticks: { color: "#8B949E" }, grid: { color: "#30363D" } },

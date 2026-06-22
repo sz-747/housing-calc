@@ -63,6 +63,7 @@ def find_breakeven(
                 "buy_wealth": round(buy_wealth, 2),
                 "rent_wealth": round(rent_wealth, 2),
                 "equity": round(equity, 2),
+                "property_value": round(property_value, 2),
             }
         )
 
