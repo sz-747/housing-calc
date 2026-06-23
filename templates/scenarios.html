@@ -4,6 +4,7 @@
 <h1>Saved scenarios</h1>
 <p>Comparisons you've run. Stored locally in saved_scenarios.json.</p>
 
+<section class="panel">
 {% if scenarios %} {% for s in scenarios %}
 <div class="scenario">
   <div>
@@ -41,4 +42,6 @@
   No saved scenarios yet.
   <a href="{{ url_for('home') }}">Run a comparison</a> to get started.
 </p>
-{% endif %} {% endblock %}
+{% endif %}
+</section>
+{% endblock %}
