@@ -26,12 +26,14 @@ content %}
 
 <section class="panel">
   <h2>Wealth comparison</h2>
-  {# view-only zoom: changes how many years of the chart are shown, never the verdict #}
+  <!-- view only zoom: changes how many years of the chart are shown-->
   <div class="chart-views">
     <span class="chart-views-label">View:</span>
     <button type="button" class="chart-view-btn" data-years="5">5 yr</button>
     <button type="button" class="chart-view-btn" data-years="15">15 yr</button>
-    <button type="button" class="chart-view-btn is-active" data-years="30">30 yr</button>
+    <button type="button" class="chart-view-btn is-active" data-years="30">
+      30 yr
+    </button>
   </div>
   <div class="chart-container">
     <!-- canvas is just painted pixels, so screen readers see nothing.role + aria-label give them a spoken description of the chart. -->
@@ -324,7 +326,7 @@ content %}
     var pct = row.equity / row.property_value;
     if (!hit20 && pct >= 0.20) {
       milestoneData[i] = row.equity;
-      milestoneLabels[i] = "20% owned";
+      milestoneLabels[i] = "You now own 20% of the home";
       hit20 = true;
     }
   }
@@ -333,7 +335,7 @@ content %}
     return "$" + value.toLocaleString();
   }
 
-  // year the buy and rent lines cross on the extended chart (may be past the horizon)
+  // year the buy and rent lines cross on the extended chart
   const crossoverYear = {{ result.chart_breakeven_year if result.chart_breakeven_year else "null" }};
 
   // draws a vertical dashed line where buying overtakes renting
@@ -450,7 +452,7 @@ content %}
           pointRadius: 2
         },
         {
-          label: "Milestone",
+          label: "20% owned",
           data: milestoneData,
           backgroundColor: "#FFD479",
           pointBackgroundColor: "#FFD479",
@@ -471,7 +473,7 @@ content %}
         tooltip: {
           callbacks: {
             label: function(ctx) {
-              if (ctx.dataset.label === "Milestone" && ctx.parsed.y !== null) {
+              if (ctx.dataset.label === "20% owned" && ctx.parsed.y !== null) {
                 return " " + milestoneLabels[ctx.dataIndex] + ":" + formatDollar(ctx.parsed.y);
               }
               if (ctx.parsed.y === null) { return null; }
