@@ -11,8 +11,8 @@
     {# meta line: TYPE · HORIZON · DEPOSIT · VERDICT TAG #}
     <div class="meta">
       {{ s.inputs.property_type | upper }} &middot; {{ s.inputs.horizon }} YR
-      &middot; {{ s.inputs.deposit | money }} &middot; {% if s.result.verdict ==
-      "buying" %}
+      &middot; {{ s.inputs.deposit | money }} dep &middot; {{ s.inputs.annual_income
+      | money }} inc &middot; {% if s.result.verdict == "buying" %}
       <span class="verdict-tag buy"
         >BUY &middot; BREAKEVEN YR {{ s.result.breakeven_year if
         s.result.breakeven_year else "N/A" }}</span

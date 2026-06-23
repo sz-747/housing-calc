@@ -125,6 +125,37 @@ class CalculationEngine:
             invested_balances = invested_balances,
         )
 
+        # extended the chart only. runs out to the loan term (capped at 30 years) 
+        # so i can see the point of intersection beyond horizon
+        # 
+        chart_years = min(loan_term_years, 30)
+        if chart_years < years:
+            chart_years = years
+        chart_property_values = calculate_property_value(
+            property_price, chart_years, property_growth
+        )
+        chart_mortgage_balances = calculate_mortgage_balance(
+            loan_amount, mortgage_rate, loan_term_years, chart_years
+        )
+        chart_rent_by_year = calculate_rent_projection(
+            weekly_rent, chart_years, rent_growth
+        )
+        chart_invested_balances = calculate_opportunity_cost(
+            deposit, chart_years, return_rate
+        )
+        # l only want the year by year breakdown list for drawing the line,
+        # so the breakeven year it returns is  ignored here.
+        chart_breakeven_ignored, chart_breakdown = find_breakeven(
+            property_values = chart_property_values,
+            mortgage_balances = chart_mortgage_balances,
+            monthly_payment = monthly_payment,
+            deposit = deposit,
+            stamp_duty = stamp_duty,
+            lmi = lmi,
+            rent_by_year = chart_rent_by_year,
+            invested_balances = chart_invested_balances,
+        )
+
         buy_projection = self._build_buy_projection(
             years = years,
             property_values = property_values,
@@ -183,6 +214,7 @@ class CalculationEngine:
             "buy_projection": buy_projection,
             "rent_projection": rent_projection,
             "yearly_breakdown": yearly_breakdown,
+            "chart_breakdown": chart_breakdown,
             "breakeven_year": breakeven_year,
             "verdict": verdict,
             "summary": summary,
