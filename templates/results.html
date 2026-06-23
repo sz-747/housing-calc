@@ -26,6 +26,13 @@ content %}
 
 <section class="panel">
   <h2>Wealth comparison</h2>
+  {# view-only zoom: changes how many years of the chart are shown, never the verdict #}
+  <div class="chart-views">
+    <span class="chart-views-label">View:</span>
+    <button type="button" class="chart-view-btn" data-years="5">5 yr</button>
+    <button type="button" class="chart-view-btn" data-years="15">15 yr</button>
+    <button type="button" class="chart-view-btn is-active" data-years="30">30 yr</button>
+  </div>
   <div class="chart-container">
     <!-- canvas is just painted pixels, so screen readers see nothing.role + aria-label give them a spoken description of the chart. -->
     <canvas
@@ -283,19 +290,30 @@ content %}
 <script>
   // tojson dumps the Python list into a JS array before the page hits the browser
   const breakdown = {{ result.yearly_breakdown | tojson }};
+  const chartBreakdown = {{ result.chart_breakdown | tojson }};
 
+  // equity chart and the milestone use the horizon-length series
   const labels = [];
-  const buyData = [];
-  const rentData = [];
   const equityData = [];
-
   for (let i = 0; i < breakdown.length; i++) {
     const row = breakdown[i];
     labels.push("Year " + row.year);
-    buyData.push(row.buy_wealth);
-    rentData.push(row.rent_wealth);
     equityData.push(row.equity);
   }
+
+  // wealth comparison uses the extended series so the long-run crossover shows
+  const wealthLabels = [];
+  const wealthBuy = [];
+  const wealthRent = [];
+  for (let i = 0; i < chartBreakdown.length; i++) {
+    const row = chartBreakdown[i];
+    wealthLabels.push("Year " + row.year);
+    wealthBuy.push(row.buy_wealth);
+    wealthRent.push(row.rent_wealth);
+  }
+
+  // the user's chosen horizon is the length of the short series
+  const horizonYear = breakdown.length;
 
   // milestone dot: year equity first crosses 20% of property value
   const milestoneData = breakdown.map(function(row) { return null; });
@@ -345,16 +363,44 @@ content %}
     }
   };
 
+  // draws a faint vertical line at the user's horizon so the extra years past it
+  // read as "looking further than you asked", not part of the decision
+  const horizonPlugin = {
+    id: "horizonLine",
+    afterDraw(chart) {
+      const idx = horizonYear - 1;
+      const meta = chart.getDatasetMeta(0);
+      if (!meta.data[idx]) { return; }
+      const x = meta.data[idx].x;
+      const yAxis = chart.scales.y;
+      const c = chart.ctx;
+      c.save();
+      c.strokeStyle = "rgba(230,237,243,0.35)";
+      c.lineWidth = 1;
+      c.setLineDash([4, 4]);
+      c.beginPath();
+      c.moveTo(x, yAxis.top);
+      c.lineTo(x, yAxis.bottom);
+      c.stroke();
+      c.setLineDash([]);
+      c.fillStyle = "rgba(230,237,243,0.6)";
+      c.font = "600 11px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
+      c.textAlign = "center";
+      c.fillText("Your horizon:Yr " + horizonYear, x, yAxis.bottom - 6);
+      c.restore();
+    }
+  };
+
   const canvas = document.getElementById("wealth-chart");
   new Chart(canvas, {
     type: "line",
-    plugins: [breakevenPlugin],
+    plugins: [breakevenPlugin, horizonPlugin],
     data: {
-      labels: labels,
+      labels: wealthLabels,
       datasets: [
         {
           label: "Buy wealth",
-          data: buyData,
+          data: wealthBuy,
           borderColor: "#E87C7C",
           backgroundColor: "rgba(232,124,124,0.1)",
           fill: true,
@@ -362,7 +408,7 @@ content %}
         },
         {
           label: "Rent wealth",
-          data: rentData,
+          data: wealthRent,
           borderColor: "#5BCEA6",
           backgroundColor: "rgba(91,206,166,0.1)",
           fill: true,
