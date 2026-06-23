@@ -26,13 +26,6 @@ content %}
 
 <section class="panel">
   <h2>Wealth comparison</h2>
-  {# view-only zoom: changes how many years of the chart are shown, never the verdict #}
-  <div class="chart-views">
-    <span class="chart-views-label">View:</span>
-    <button type="button" class="chart-view-btn" data-years="5">5 yr</button>
-    <button type="button" class="chart-view-btn" data-years="15">15 yr</button>
-    <button type="button" class="chart-view-btn is-active" data-years="30">30 yr</button>
-  </div>
   <div class="chart-container">
     <!-- canvas is just painted pixels, so screen readers see nothing.role + aria-label give them a spoken description of the chart. -->
     <canvas
@@ -392,7 +385,7 @@ content %}
   };
 
   const canvas = document.getElementById("wealth-chart");
-  const wealthChart = new Chart(canvas, {
+  new Chart(canvas, {
     type: "line",
     plugins: [breakevenPlugin, horizonPlugin],
     data: {
@@ -488,27 +481,6 @@ content %}
       }
     }
   });
-
-  // 5/15/30 year view toggle. only changes how much of the wealth chart is shown
-  // by limiting the x-axis. the data and the verdict never change.
-  const viewButtons = document.querySelectorAll(".chart-view-btn");
-
-  function setWealthView(years) {
-    wealthChart.options.scales.x.min = 0;
-    wealthChart.options.scales.x.max = years - 1;
-    wealthChart.update();
-  }
-
-  for (let i = 0; i < viewButtons.length; i++) {
-    viewButtons[i].addEventListener("click", function () {
-      const years = Number(this.dataset.years);
-      setWealthView(years);
-      for (let j = 0; j < viewButtons.length; j++) {
-        viewButtons[j].classList.remove("is-active");
-      }
-      this.classList.add("is-active");
-    });
-  }
 </script>
 
 {% endblock %}
