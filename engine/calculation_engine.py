@@ -144,8 +144,7 @@ class CalculationEngine:
             deposit, chart_years, return_rate
         )
         # this breakeven year is the long-run crossover on the extended line.
-        # it can land beyond the horizon, so it does NOT drive the verdict - it
-        # is only used to mark where buying overtakes renting on the chart.
+        # it can land beyond the horizon, so it is only used to mark where buying overtakes renting on the chart.
         chart_breakeven_year, chart_breakdown = find_breakeven(
             property_values = chart_property_values,
             mortgage_balances = chart_mortgage_balances,
