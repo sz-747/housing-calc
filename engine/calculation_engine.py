@@ -143,9 +143,10 @@ class CalculationEngine:
         chart_invested_balances = calculate_opportunity_cost(
             deposit, chart_years, return_rate
         )
-        # l only want the year by year breakdown list for drawing the line,
-        # so the breakeven year it returns is  ignored here.
-        chart_breakeven_ignored, chart_breakdown = find_breakeven(
+        # this breakeven year is the long-run crossover on the extended line.
+        # it can land beyond the horizon, so it does NOT drive the verdict - it
+        # is only used to mark where buying overtakes renting on the chart.
+        chart_breakeven_year, chart_breakdown = find_breakeven(
             property_values = chart_property_values,
             mortgage_balances = chart_mortgage_balances,
             monthly_payment = monthly_payment,
@@ -215,6 +216,7 @@ class CalculationEngine:
             "rent_projection": rent_projection,
             "yearly_breakdown": yearly_breakdown,
             "chart_breakdown": chart_breakdown,
+            "chart_breakeven_year": chart_breakeven_year,
             "breakeven_year": breakeven_year,
             "verdict": verdict,
             "summary": summary,

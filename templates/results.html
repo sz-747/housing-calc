@@ -26,6 +26,13 @@ content %}
 
 <section class="panel">
   <h2>Wealth comparison</h2>
+  {# view-only zoom: changes how many years of the chart are shown, never the verdict #}
+  <div class="chart-views">
+    <span class="chart-views-label">View:</span>
+    <button type="button" class="chart-view-btn" data-years="5">5 yr</button>
+    <button type="button" class="chart-view-btn" data-years="15">15 yr</button>
+    <button type="button" class="chart-view-btn is-active" data-years="30">30 yr</button>
+  </div>
   <div class="chart-container">
     <!-- canvas is just painted pixels, so screen readers see nothing.role + aria-label give them a spoken description of the chart. -->
     <canvas
@@ -326,14 +333,15 @@ content %}
     return "$" + value.toLocaleString();
   }
 
-  const breakevenYear = {{ result.breakeven_year if result.breakeven_year else "null" }};
+  // year the buy and rent lines cross on the extended chart (may be past the horizon)
+  const crossoverYear = {{ result.chart_breakeven_year if result.chart_breakeven_year else "null" }};
 
-  // draws a vertical dashed line at the breakeven year
+  // draws a vertical dashed line where buying overtakes renting
   const breakevenPlugin = {
     id: "breakevenLine",
     afterDraw(chart) {
-      if (breakevenYear === null) { return; }
-      const idx = breakevenYear - 1;
+      if (crossoverYear === null) { return; }
+      const idx = crossoverYear - 1;
       const meta = chart.getDatasetMeta(0);
       if (!meta.data[idx]) { return; }
       const x = meta.data[idx].x;
@@ -351,7 +359,7 @@ content %}
       c.fillStyle = "rgba(124,168,232,0.85)";
       c.font = "600 11px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
       c.textAlign = "center";
-      c.fillText("Break even:Yr " + breakevenYear, x, yAxis.top + 14);
+      c.fillText("Buying overtakes:Yr " + crossoverYear, x, yAxis.top + 14);
       c.restore();
     }
   };
@@ -385,7 +393,7 @@ content %}
   };
 
   const canvas = document.getElementById("wealth-chart");
-  new Chart(canvas, {
+  const wealthChart = new Chart(canvas, {
     type: "line",
     plugins: [breakevenPlugin, horizonPlugin],
     data: {
@@ -481,6 +489,27 @@ content %}
       }
     }
   });
+
+  // 5/15/30 year view toggle. only changes how much of the wealth chart is shown
+  // by limiting the x-axis. the data and the verdict never change.
+  const viewButtons = document.querySelectorAll(".chart-view-btn");
+
+  function setWealthView(years) {
+    wealthChart.options.scales.x.min = 0;
+    wealthChart.options.scales.x.max = years - 1;
+    wealthChart.update();
+  }
+
+  for (let i = 0; i < viewButtons.length; i++) {
+    viewButtons[i].addEventListener("click", function () {
+      const years = Number(this.dataset.years);
+      setWealthView(years);
+      for (let j = 0; j < viewButtons.length; j++) {
+        viewButtons[j].classList.remove("is-active");
+      }
+      this.classList.add("is-active");
+    });
+  }
 </script>
 
 {% endblock %}

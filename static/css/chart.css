@@ -3,3 +3,37 @@
   height: 320px;
   margin: 0.5rem 0 0.25rem;
 }
+
+.chart-views {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-bottom: 0.5rem;
+}
+
+.chart-views-label {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  margin-right: 0.2rem;
+}
+
+.chart-view-btn {
+  background: var(--bg-panel);
+  color: var(--text-secondary);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 0.25rem 0.6rem;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+.chart-view-btn:hover {
+  color: var(--text-primary);
+  border-color: var(--accent);
+}
+
+.chart-view-btn.is-active {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+}

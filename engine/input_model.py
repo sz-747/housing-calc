@@ -149,6 +149,8 @@ class ComparisonResult:
         self.yearly_breakdown = data["yearly_breakdown"]
         # older saved scenarios predate the extended chart series, so default to the horizon length breakdown if it isnt there
         self.chart_breakdown = data.get("chart_breakdown", data["yearly_breakdown"])
+        # year the lines cross on the extended chart, may be beyond the horizon
+        self.chart_breakeven_year = data.get("chart_breakeven_year", data["breakeven_year"])
         self.breakeven_year = data["breakeven_year"]
         self.affordability = data["affordability"]
         self.flip_points = data.get("flip_points", {"buying_wins": True, "flip_deposit": None, "flip_rate": None, "flip_growth": None})
@@ -185,6 +187,7 @@ class ComparisonResult:
         "rent_projection": self.rent_projection,
         "yearly_breakdown": self.yearly_breakdown,
         "chart_breakdown": self.chart_breakdown,
+        "chart_breakeven_year": self.chart_breakeven_year,
         "breakeven_year": self.breakeven_year,
         "affordability": self.affordability,
         "flip_points": self.flip_points,
